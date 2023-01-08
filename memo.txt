@@ -1,0 +1,4 @@
+「java サーブレット データベースから取得して一覧表示」でGoogle検索
+
+【サーブレット＆jsp】データベースのデータを表示する
+https://uha-blog.com/java/servlet-database-display/
