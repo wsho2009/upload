@@ -9,16 +9,14 @@
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script>
   	$(function() {
+		//（暫定）いったん初期値を設定
+		var value = "EXCEL";
+		var name = "EXCEL_COMMON_FORMAT";
+		console.log("COMMON " + value + " " + name);
+		var zokusei = {value:value, text:name};	// 属性を生成
+		var yoso = $('<option>', zokusei);		// 要素を生成
+		$('#select-1').append(yoso);			// セレクトボックスを追加
   	  	var id = "<%= request.getAttribute("id") %>";
-  	  	//Formリストの取得
-		//$.ajax({
-		//	url: "uploadServlet",
-		//	type: "POST",
-        //    data: {
-	    //        type : "select", 
-		//		id : id
-	    //    }
-        //}).done(function (data) {
 	    $.post('uploadServlet', 'type=select', 'id='+id)
         .done(function (data) {
           // 通信成功時のコールバック
@@ -45,14 +43,6 @@
         //  // 常に実行する処理
         });
 
-		//$.ajax({
-		//	url: "uploadServlet",
-		//	type: "POST",
-        //	data: {
-	    //		type : "rireki", 
-		//		id : id
-	    //    }
-        //}).done(function (data) {
    	    $.post('uploadServlet', 'type=rireki', 'id='+id)
         .done(function (data) {
             // 通信成功時のコールバック
@@ -226,21 +216,15 @@
 			formData.append('formName', formName);
 			console.log(formData);
 
-			$.ajax({
-				url: "uploadServlet",
-				//method: 'post',
-				type: "POST",
-	            data: {
-		            type : "upload", 
-					id : id,
-					user : user,
-					code : code,
-					dt : dtStr,
-					file : fileName,
-					formId : formId,
-					formName : formName
-		        }
-			}).done(function(res) {
+	        $.ajax({
+	            url: 'uploadServlet',
+	            type: 'post',
+	            processData: false,
+	            contentType: false, // 送信するデータをFormDataにする場合、こうしないといけない。
+	            cache: false,
+	            dataType: 'json',
+	            data: formData,
+	        }).done(function(res) {
 				console.log(res);
 				$('#preview_field').empty();	//表示していた画像を消去
 				$('#input_file').val('');		//inputの中身を消去
@@ -257,7 +241,7 @@
 			}).fail(function(err) {
 				console.log(err);
 			});
-		});
+        });
 		function formatDate(date, format) {
 			format = format.replace(/yyyy/g, date.getFullYear());
 			format = format.replace(/MM/g, ('0'+ (date.getMonth()+1)).slice(-2));

@@ -4,15 +4,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 /**
  * Servlet implementation class uploadServlet
  */
 @WebServlet("/uploadServlet")
+@MultipartConfig(fileSizeThreshold = 5000000, maxFileSize = 700 * 1024 * 1024, location = "d:/pleiades")
 public class uploadServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -60,15 +63,15 @@ public class uploadServlet extends HttpServlet {
         if (type.startsWith("select")) {
 	        String id = request.getParameter("id");
 	        System.out.println(id);
-	        
+		
 	        String[][] data = new String[][] {
 	        	{"1","A0001","AAAAA","test@login.com"},
 	        	{"2","B0002","BBBBB","test@login.com"}
 	        };
-
+		
 	    	// リクエストスコープにArrayListを設定
 	    	//request.setAttribute("data", list);	        
-	        
+
 	        //レスポンス
 	        PrintWriter out = response.getWriter();
 	        out.print(data);
@@ -96,13 +99,35 @@ public class uploadServlet extends HttpServlet {
 	        String formName = request.getParameter("formName");
 	        System.out.println(formName);
 	        
+	        //https://kuwalab.hatenablog.jp/entry/20120424/1335266757
+			request.setCharacterEncoding("utf-8");
+			Part part = request.getPart("file");
+			String name = getFilename(part);
+			name = formId + "_" + dt + ".pdf";
+			part.write(name);	//ファイル保存
+			
+			response.setCharacterEncoding("utf-8");
+			response.setContentType("application/json");
+			
 	        //レスポンス
-	        PrintWriter out = response.getWriter();
-	        out.print("upload success");
-	    }
-		
+			PrintWriter pw = response.getWriter();
+			pw.println("{\"result\":\"ok\"}");
+			pw.flush();
+			pw.close();
+        }
+
 		//doGet(request, response);
-	}
+    }
+    private String getFilename(Part part) {
+        for (String cd : part.getHeader("Content-Disposition").split(";")) {
+            if (cd.trim().startsWith("filename")) {
+                return cd.substring(cd.indexOf('=') + 1).trim()
+                        .replace("\"", "");
+            }
+        }
+
+        return null;
+    }
 
 	/**
 	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
