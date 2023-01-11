@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.List"%>
+<%@ page import="fax.poFormBean" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,18 +10,11 @@
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script>
   	$(function() {
-		//（暫定）いったん初期値を設定
-		var value = "EXCEL";
-		var name = "EXCEL_COMMON_FORMAT";
-		console.log("COMMON " + value + " " + name);
-		var zokusei = {value:value, text:name};	// 属性を生成
-		var yoso = $('<option>', zokusei);		// 要素を生成
-		$('#select-1').append(yoso);			// セレクトボックスを追加
   	  	var id = "<%= request.getAttribute("id") %>";
 	    $.post('uploadServlet', 'type=select', 'id='+id)
-        .done(function (data) {
+        .done(function(data) {
           // 通信成功時のコールバック
-          	console.log(data)
+          	console.log(data);
           	//ループ
 			$.each(data, function(i, data){
 				var value = data[1] + " " + data[3];	// code address
@@ -370,6 +364,16 @@
   		<th>Form</th>
   		<td><select name="form" id="select-1" class="target">
   			<option value="" label="" selected></option>
+       		<% 
+       		List<poFormBean> select = (List<poFormBean>)request.getAttribute("select");
+       		for (int i=0; i<select.size(); i++) {
+       			poFormBean poForm = (poFormBean)select.get(i);
+       		%>
+       		<option value=<%= poForm.getCode() %> label=<%= poForm.getFormId() %>><%= poForm.getFormId() %></option>
+      		<%
+      		}
+       		%>
+       		<option value="EXCEL" label="EXCEL_COMMON_FORMAT" selected>EXCEL_COMMON_FORMAT</option>
   		</select></td>
   		<th>File</th>
   		<td>

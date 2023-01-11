@@ -2,6 +2,8 @@ package fax;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -48,6 +50,15 @@ public class uploadServlet extends HttpServlet {
 		request.setAttribute("unitId", unitId);
 		request.setAttribute("unitStatus", unitStatus);
 
+        ArrayList<poFormBean> select;
+		try {
+			select = poFormDAO.getInstance().read(loginId);
+	    	// リクエストスコープにArrayListを設定
+	    	request.setAttribute("select", select);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		// 次の画面に遷移
 		request.getRequestDispatcher("/upload.jsp").forward(request, response);
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
@@ -63,15 +74,25 @@ public class uploadServlet extends HttpServlet {
         if (type.startsWith("select")) {
 	        String id = request.getParameter("id");
 	        System.out.println(id);
-		
+	        
+/*
+	        ArrayList<poFormBean> list;
+			try {
+				list = poFormDAO.getInstance().read(id);
+		    	// リクエストスコープにArrayListを設定
+		    	request.setAttribute("data", list);
+
+		        //レスポンス
+		        PrintWriter out = response.getWriter();
+		        out.print("success");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+*/
 	        String[][] data = new String[][] {
 	        	{"1","A0001","AAAAA","test@login.com"},
 	        	{"2","B0002","BBBBB","test@login.com"}
 	        };
-		
-	    	// リクエストスコープにArrayListを設定
-	    	//request.setAttribute("data", list);	        
-
 	        //レスポンス
 	        PrintWriter out = response.getWriter();
 	        out.print(data);
@@ -103,7 +124,8 @@ public class uploadServlet extends HttpServlet {
 			request.setCharacterEncoding("utf-8");
 			Part part = request.getPart("file");
 			String name = getFilename(part);
-			name = formId + "_" + dt + ".pdf";
+			String dtStr = dt.substring(0,4) + dt.substring(5,7) + dt.substring(8,10) + dt.substring(11,13) + dt.substring(14,16) + dt.substring(17,19);
+			name = formId + "_" + dtStr + ".pdf";
 			part.write(name);	//ファイル保存
 			
 			response.setCharacterEncoding("utf-8");

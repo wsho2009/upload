@@ -33,6 +33,9 @@ public class webApi extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String Object = request.getParameter("obj");
+        if (Object == null) {
+        	return;
+        }
         if (Object.startsWith("konyurireki")) {
         	//パラメータ解析
 	        String Konyuusaki = request.getParameter("konyuusaki");
@@ -40,7 +43,7 @@ public class webApi extends HttpServlet {
 	
 			try {
 				ArrayList<konyuDTO> list = konyuDAO.getInstance().read(Konyuusaki);
-	
+				//https://rainbow-engine.com/jspservlet-csv-download/
 				response.setContentType("text/tsv;charset=UTF8");
 				String fileName = new String("konyurireki.tsv".getBytes("Shift_JIS"), "ISO-8859-1");
 				response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
