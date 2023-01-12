@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="fax.faxDTO" %>
+<%@ page import="fax.faxBean" %>
 <%@ page import="java.sql.ResultSet"%>
 <%@ page import="java.util.List"%>
 
@@ -129,9 +129,9 @@
   	</tr></thead>
    	<tbody>
    		<% 
-   		List<faxDTO> list = (List<faxDTO>)request.getAttribute("list");
+   		List<faxBean> list = (List<faxBean>)request.getAttribute("list");
    		for (int i=0; i<list.size(); i++) {
-   			faxDTO fax = (faxDTO)list.get(i);
+   			faxBean fax = (faxBean)list.get(i);
    		%>
  		<tr>
   			<td><%= fax.getId() %></td>

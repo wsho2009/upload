@@ -2,13 +2,13 @@ package fax;
 
 import java.io.Serializable;
 
-public class faxDTO implements Serializable {
+public class faxBean implements Serializable {
 
 	private int mId;
 	private String mTodo;
 	private String mTimeLimit;
 	
-	public faxDTO() {
+	public faxBean() {
 	}
 
 	public void setId(int id) { this.mId = id; }

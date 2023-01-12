@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.util.List"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -47,21 +48,25 @@
     <div id="spreadsheet"></div>
 
     <script>
-    data = [
-        ["2021/12/30", 3000, "2021/11/30", 3000],
-        ["2021/12/30", 3000, "2021/11/30", 3000],
-        ["2021/12/15", 3000, "2021/11/15", 3000],
-        ["2021/12/15", 3000, "2021/11/15", 3000],
-    ];
+    <% List<String[]> list = (List<String[]>)request.getAttribute("list"); %> var dataArray = [
+		<% for (int i = 0; i < list.size(); i++ ) {
+			String[] array = (String[])list.get(i);
+			out.print("[");
+			out.print('"' + array[0] + '"' + ',' + array[1] + ',' + '"' + array[2] + '"' + ',' + array[3]);
+			out.print("],");
+		}%>
+	];
+    <% List<String[]> columns_list = (List<String[]>)request.getAttribute("columns"); %>  var columnsArray = [
+		<% for (int i = 0; i < columns_list.size(); i++ ) {
+			String[] col_array = (String[])columns_list.get(i);
+			out.print("{");
+			out.print(col_array[0] + ',' + col_array[1] + ',' + col_array[2]);
+			out.print("},");
+		}%>
+	];
     mySpreadsheet = jexcel(document.getElementById('spreadsheet'), {
-        data:data,
-        columns:[
-            { title:'客先要求納期', width:120, type:'text'},
-            { title:'数量', width:80, type:'numeric'  },
-            { title:'営業希望納期', width:120, type:'text'  },
-            { title:'数量', width:80, type:'numeric' }
-        ],
-
+        data: dataArray,
+        columns: columnsArray,
         text:{
             // noRecordsFound:'Nenhum registro encontrado',
             // showingPage:'Mostrando página {0} de {1} entradas',

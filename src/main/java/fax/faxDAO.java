@@ -27,7 +27,7 @@ public class faxDAO {
 	
 	// 検索処理
 	// 戻り値		：ArrayList<Beanクラス>
-	public ArrayList<faxDTO> read() throws SQLException {
+	public ArrayList<faxBean> read() throws SQLException {
 		String URL;
 		String USER;
 		String PASS;
@@ -41,7 +41,7 @@ public class faxDAO {
 		PASS = rb.getString("PASS");
 		//接続処理
 		Connection conn = null;
-		ArrayList<faxDTO> fax_dao = new ArrayList<faxDTO>();
+		ArrayList<faxBean> fax_dao = new ArrayList<faxBean>();
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(URL,USER,PASS);
@@ -50,7 +50,7 @@ public class faxDAO {
 			PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            faxDTO fax = new faxDTO();
+            faxBean fax = new faxBean();
 			while(rs.next()) {
 				// ユーザIDと名前をBeanクラスへセット
             	fax.setId(rs.getInt("id"));
@@ -59,7 +59,7 @@ public class faxDAO {
             	// リストにBeanクラスごと格納
 				fax_dao.add(fax);
 				//Beanクラスを初期化
-				fax = new faxDTO();
+				fax = new faxBean();
 			}
 			
 		} catch(SQLException sql_e) {
