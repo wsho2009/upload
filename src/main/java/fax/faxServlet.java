@@ -2,7 +2,7 @@ package fax;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,13 +29,11 @@ public class faxServlet extends HttpServlet {
 		String unitId = "40952";
 		String unitStatus = "COMPLETE";
 		
-		faxDAO dao = new faxDAO();
-        List<faxDTO> list;
+        ArrayList<faxBean> list;
 		try {
-			list = dao.read();
+	        list = faxDAO.getInstance().read();
 		} catch (SQLException e) {
 			list = null;
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 		
@@ -57,7 +55,10 @@ public class faxServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+        String form = request.getParameter("form");
+        System.out.println("type: " + form);
+        String date = request.getParameter("date");
+        System.out.println("userId: " + date);      
 		doGet(request, response);
 	}
 

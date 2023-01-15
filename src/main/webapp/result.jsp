@@ -22,8 +22,8 @@
 			button.disabled = false
 		}
 		$('#completeButton').click(function() {
-			console.log('/complete/' + unitId)
-			$.post('/complete/' + unitId)
+			console.log('complete unitId:' + unitId)
+			$.post('resultServlet', 'type=complete', 'unitId=' + unitId)
 			.done(function( data ) {
 				windows.close();
 			});

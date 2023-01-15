@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Servlet implementation class uploadServlet
  */
@@ -40,7 +43,6 @@ public class uploadServlet extends HttpServlet {
 		String title = "アップロード";
 		String unitId = "40952";
 		String unitStatus = "COMPLETE";
-		
 		// 次の画面(jsp)に値を渡す
 		request.setAttribute("title", title);
 		request.setAttribute("id", loginId);
@@ -49,16 +51,6 @@ public class uploadServlet extends HttpServlet {
 
 		request.setAttribute("unitId", unitId);
 		request.setAttribute("unitStatus", unitStatus);
-
-        ArrayList<poFormBean> select;
-		try {
-			select = poFormDAO.getInstance().read(loginId);
-	    	// リクエストスコープにArrayListを設定
-	    	request.setAttribute("select", select);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
 		// 次の画面に遷移
 		request.getRequestDispatcher("/upload.jsp").forward(request, response);
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
@@ -69,44 +61,54 @@ public class uploadServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String type = request.getParameter("type");
-        System.out.println(type);
+        System.out.println("type: " + type);
+        String userId = request.getParameter("id");
+        System.out.println("userId: " + userId);      
         //Form list 
         if (type.startsWith("select")) {
-	        String id = request.getParameter("id");
-	        System.out.println(id);
-	        
-/*
-	        ArrayList<poFormBean> list;
+	        //レスポンス
+	        response.setCharacterEncoding("utf-8");
+			response.setContentType("application/json");
+        	PrintWriter out = response.getWriter();
 			try {
-				list = poFormDAO.getInstance().read(id);
-		    	// リクエストスコープにArrayListを設定
-		    	request.setAttribute("data", list);
-
-		        //レスポンス
-		        PrintWriter out = response.getWriter();
-		        out.print("success");
+		        //Javaオブジェクトに値をセット
+				ArrayList<poFormBean> select = poFormDAO.getInstance().read(userId);
+		        ObjectMapper mapper = new ObjectMapper();
+		        try {
+		            //JavaオブジェクトからJSONに変換
+		            String json = mapper.writeValueAsString(select);
+		            //JSONの出力
+		            out.write(json);
+		        } catch (JsonProcessingException e) {
+		            e.printStackTrace();
+		        }
+				out.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-*/
-	        String[][] data = new String[][] {
-	        	{"1","A0001","AAAAA","test@login.com"},
-	        	{"2","B0002","BBBBB","test@login.com"}
-	        };
-	        //レスポンス
-	        PrintWriter out = response.getWriter();
-	        out.print(data);
 	    //History list
         } else if (type.startsWith("rireki")) {
-	        String id = request.getParameter("id");
-	        System.out.println(id);
-
 	        //レスポンス
-	        PrintWriter out = response.getWriter();
-	        out.print("");
+	        response.setCharacterEncoding("utf-8");
+			response.setContentType("application/json");
+        	PrintWriter out = response.getWriter();
+			try {
+		        //Javaオブジェクトに値をセット
+				ArrayList<poUploadBean> rireki = poUploadDAO.getInstance().read(userId);
+		        ObjectMapper mapper = new ObjectMapper();
+		        try {
+		            //JavaオブジェクトからJSONに変換
+		            String json = mapper.writeValueAsString(rireki);
+		            //JSONの出力
+		            out.write(json);
+		        } catch (JsonProcessingException e) {
+		            e.printStackTrace();
+		        }
+				out.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
         } else if (type.startsWith("upload")) {
-	        String id = request.getParameter("id");
-	        System.out.println(id);
 	        String user = request.getParameter("user");
 	        System.out.println(user);
 	        String code = request.getParameter("code");

@@ -11,19 +11,19 @@
   <script>
   	$(function() {
   	  	var id = "<%= request.getAttribute("id") %>";
-	    $.post('uploadServlet', 'type=select', 'id='+id)
+  	  	console.log('id='+id);
+	    $.post('uploadServlet', 'type=select&id='+id)
         .done(function(data) {
-          // 通信成功時のコールバック
+          	// 通信成功時のコールバック
           	console.log(data);
-          	//ループ
-			$.each(data, function(i, data){
-				var value = data[1] + " " + data[3];	// code address
-				var name = data[1] + " " + data[2];		// oode name (表示部分)
-				console.log(i + " " + value + " " + name);
+          	$.each(data, function(i, val) {
+ 				var value = val.code + " " + val.formId; 
+ 				var name = val.code + "_" + val.formName; 
 				var zokusei = {value:value, text:name};	// 属性を生成
+				//console.log(i + ': ' + name);
 				var yoso = $('<option>', zokusei);		// 要素を生成
 				$('#select-1').append(yoso);			// セレクトボックスを追加
-			});
+          	});
 	    	var value = "EXCEL";
 	    	var name = "EXCEL_COMMON_FORMAT";
 	    	console.log("COMMON " + value + " " + name);
@@ -37,9 +37,10 @@
         //  // 常に実行する処理
         });
 
-   	    $.post('uploadServlet', 'type=rireki', 'id='+id)
+   	    $.post('uploadServlet', 'type=rireki&id='+id)
         .done(function (data) {
             // 通信成功時のコールバック
+            console.log(data);
   	  	  	//既存テーブルクリア
   	  	  	$('#listtable').empty();
   	  	  	var html = '<table border="1" />'
@@ -50,15 +51,15 @@
 			$.each(data, function(i, registdata){
 				var tbody = $('<tbody />');
 				var tr = $('<tr />');
-				var id = $('<td />').text(registdata[0]);
-				var registered = $('<td />').text(registdata[1]);
-				var org_file_name = $('<td />').text(registdata[2]);
-				var form_id = $('<td />').text(registdata[3]);
-				tr.apped(id);
-				tr.apped(registered);
-				tr.apped(org_file_name);
-				tr.apped(form_id);
-				tbody.appped(tr);
+				var id = $('<td />').text(registdata.username);
+				var registered = $('<td />').text(registdata.datetime);
+				var org_file_name = $('<td />').text(registdata.filename);
+				var form_id = $('<td />').text(registdata.formname);
+				tr.append(id);
+				tr.append(registered);
+				tr.append(org_file_name);
+				tr.append(form_id);
+				tbody.append(tr);
 				$('#listtable').append(tbody);
 			});
         }).fail(function () {
@@ -246,14 +247,6 @@
 			format = format.replace(/SSS/g, ('0'+ date.getMilliseconds()).slice(-3));
 			return format;
 		};
-		//いらん
-		$('#completeButton').click(function() {
-			console.log('/complete/' + unitId)
-			$.post('/complete/' + unitId)
-			.done(function( data ) {
-				windows.close();
-			});
-		});
 	});
    </script>
    <style>
@@ -332,7 +325,7 @@
     	font-weight: normal;
     	padding: 0px 5px;
     }
-    #control td {
+    #listtable td {
     	border: 1px solid blue;
     	padding: 0px 5px;
     }
@@ -364,16 +357,6 @@
   		<th>Form</th>
   		<td><select name="form" id="select-1" class="target">
   			<option value="" label="" selected></option>
-       		<% 
-       		List<poFormBean> select = (List<poFormBean>)request.getAttribute("select");
-       		for (int i=0; i<select.size(); i++) {
-       			poFormBean poForm = (poFormBean)select.get(i);
-       		%>
-       		<option value=<%= poForm.getCode() %> label=<%= poForm.getFormId() %>><%= poForm.getFormId() %></option>
-      		<%
-      		}
-       		%>
-       		<option value="EXCEL" label="EXCEL_COMMON_FORMAT" selected>EXCEL_COMMON_FORMAT</option>
   		</select></td>
   		<th>File</th>
   		<td>

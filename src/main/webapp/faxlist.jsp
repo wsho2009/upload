@@ -9,28 +9,27 @@
 <head>
   <meta charset="UTF-8">
   <title><%= request.getAttribute("title") %></title>
-  <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.0/js/jquery.tablesorter.min.js"></script>
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
-  <script type="text/javascript" src="https://bossanova.uk/jspreadsheet/v3/jexcel.js"></script>
-  <script type="text/javascript" src="https://jsuites.net/v3/jsuites.js"></script>
+  <script type="text/javascript" src="js/jquery-3.5.1.min.js"></script>
+  <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+  <%--<script type="text/javascript" src="js/jquery.ui.datepicker-ja.min.js"></script>--%>
+  <script type="text/javascript" src="js/jquery.tablesorter.combined.min.js"></script>
   
-  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-  <link rel="stylesheet" href="https://bossanova.uk/jspreadsheet/v3/jexcel.css" type="text/css" />
-  <link rel="stylesheet" href="https://jsuites.net/v3/jsuites.css" type="text/css" />
+  <link href="css/w3-theme-blue.css">
+  <link href="css/jquery-ui.css" rel="stylesheet">
+  <link href="css/theme.default.min.css" rel="stylesheet">
   <script type="text/javascript">
     $(document).ready(function() {
-		$("table").tablesorter({
-			theme: 'blue',
-			widthFixed: true,
-			widgets: ['zebra', 'columns', 'resizable', 'sticyHeaders'],
-		});
+		$("table").tablesorter();
+		//$("table").tablesorter({
+		//	theme: 'blue',
+		//	widthFixed: true,
+		//	widgets: ['zebra', 'columns', 'resizable', 'sticyHeaders'],
+		//});
 	});
   	$(function() {
 		$(".datepicker").datepicker();
 	});
-   </script>
+  </script>
   <style>
     html,body {
         font-family:sans-serif;
@@ -46,8 +45,6 @@
     	color: #fff;
 		text-decoration: none;
 		white-space: nowrap;
-    	border: 1px solid blue;
-    	font-weight: normal;
     }
     li {
 		margin: 2rem 0;
@@ -109,9 +106,9 @@
   	  	}
   	};
   </script>
-  <form action=<%= request.getAttribute("path") %> method="post">
+  <form action=faxServlet method="post">
      Form: <input type="text" name="form">
-     Date:  <input type="date" name="form">
+     Date:  <input type="date" name="date">
      <button type="submit">Find</button><br>
      <chuui>IEサポート終了に伴い...</chuui>
   </form>

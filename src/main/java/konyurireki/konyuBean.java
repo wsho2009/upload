@@ -2,7 +2,7 @@ package konyurireki;
 
 import java.io.Serializable;
 
-public class konyuDTO implements Serializable {
+public class konyuBean implements Serializable {
 
 	private int mNo;
 	private String mHizuke;
@@ -13,7 +13,7 @@ public class konyuDTO implements Serializable {
 	private String mSoryo;
 	private String mKakakuKei;
 	
-	public konyuDTO() {
+	public konyuBean() {
 	}
 
 	public void setNo(int no) { this.mNo = no; }

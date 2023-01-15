@@ -11,19 +11,19 @@ import java.util.ResourceBundle;
  * @author PC
  *
  */
-public class poFormDAO {
+public class poUploadDAO {
 	
-	public poFormDAO() {
+	public poUploadDAO() {
 	}
 
 	// インスタンスオブジェクトの生成->返却（コードの簡略化）
-	public static poFormDAO getInstance() {
-		return new poFormDAO();
+	public static poUploadDAO getInstance() {
+		return new poUploadDAO();
 	}
 	
 	// 検索処理
 	// 戻り値		：ArrayList<Beanクラス>
-	public ArrayList<poFormBean> read(String id) throws SQLException {
+	public ArrayList<poUploadBean> read(String id) throws SQLException {
 		String URL;
 		String USER;
 		String PASS;
@@ -36,23 +36,22 @@ public class poFormDAO {
 		USER = rb.getString("USER");
 		PASS = rb.getString("PASS");
 		
-		ArrayList<poFormBean> list = new ArrayList<poFormBean>();		
+		ArrayList<poUploadBean> list = new ArrayList<poUploadBean>();		
         String[][] data = new String[][] {
-        	{"1","A0001","AAAAA","AAA_NAME","test@login.com"},
-        	{"2","B0002","BBBBB","BBB_NAME","test@login.com"}
+        	{"Taro","2023/01/01 10:11:22","AAAAA.pdf","AAA_NAME"},
+        	{"Jiro","2023/01/04 08:11:22","BBBBB.pdf","BBB_NAME"}
         };
-        poFormBean poForm = new poFormBean();
+        poUploadBean poUpload = new poUploadBean();
 		for (int i=0; i<2; i++) {
 			// ユーザIDと名前をBeanクラスへセット
-			poForm.setNo(Integer.parseInt(data[i][0]));
-			poForm.setCode(data[i][1]);
-			poForm.setFormId(data[i][2]);
-			poForm.setFormName(data[i][3]);
-			poForm.setMember(data[i][4]);
+			poUpload.setUserName(data[i][0]);
+			poUpload.setDatetime(data[i][1]);
+			poUpload.setFileName(data[i][2]);
+			poUpload.setFormName(data[i][3]);
         	// リストにBeanクラスごと格納
-			list.add(poForm);
+			list.add(poUpload);
 			//Beanクラスを初期化
-			poForm = new poFormBean();
+			poUpload = new poUploadBean();
 		}
         
 		// リストを返す

@@ -24,7 +24,7 @@ public class konyuDAO {
 	
 	// 検索処理
 	// 戻り値		：ArrayList<Beanクラス>
-	public ArrayList<konyuDTO> read(String Konnyusaki) throws SQLException {
+	public ArrayList<konyuBean> read(String Konnyusaki) throws SQLException {
 		String URL;
 		String USER;
 		String PASS;
@@ -43,7 +43,7 @@ public class konyuDAO {
 		PASS = rb.getString("PASS");
 		//接続処理
 		Connection conn = null;
-		ArrayList<konyuDTO> konyu_dao = new ArrayList<konyuDTO>();
+		ArrayList<konyuBean> konyu_dao = new ArrayList<konyuBean>();
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(URL,USER,PASS);
@@ -52,7 +52,7 @@ public class konyuDAO {
 			PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            konyuDTO dao = new konyuDTO();
+            konyuBean dao = new konyuBean();
 			while(rs.next()) {
 				// ユーザIDと名前をBeanクラスへセット
 				dao.setNo(rs.getInt("NO"));
@@ -66,7 +66,7 @@ public class konyuDAO {
 				// リストにBeanクラスごと格納
 				konyu_dao.add(dao);
 				//Beanクラスを初期化
-				dao = new konyuDTO();
+				dao = new konyuBean();
 			}
 			
 		} catch(SQLException sql_e) {
