@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.List"%>
+<%@ page import="fax.PoRirekiBean"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,11 +12,13 @@
   <link rel="stylesheet" href="https://bossanova.uk/jspreadsheet/v3/jexcel.css" type="text/css" />
   <link rel="stylesheet" href="https://jsuites.net/v3/jsuites.css" type="text/css" />
   <script>
-  	const unitId = <%= request.getAttribute("id") %>;
-  	const unitStatus = <%= request.getAttribute("status") %>;
+  	const unitId = <%= request.getAttribute("unitId") %>;
+  	const unitStatus = "<%= request.getAttribute("unitStatus") %>";
+  	const url = "<%= request.getAttribute("url") %>";
   	$(function() {
 		console.log("unitId: " + unitId)
 		console.log("unitStatus: " + unitStatus)
+		console.log("url: " + url)
 		if (unitStatus == 'COMPLETE' || unitStatus == '') {
 			document.getElementById("completeButton").style.display = "noen";
 			var button = document.getElementById("completeButton");
@@ -23,7 +26,7 @@
 		}
 		$('#completeButton').click(function() {
 			console.log('complete unitId:' + unitId)
-			$.post('resultServlet', 'type=complete', 'unitId=' + unitId)
+			$.post('resultServlet', 'type=complete&unitId=' + unitId)
 			.done(function( data ) {
 				windows.close();
 			});
@@ -48,14 +51,14 @@
     <div id="spreadsheet"></div>
 
     <script>
-    <% List<String[]> list = (List<String[]>)request.getAttribute("list"); %> var dataArray = [
-		<% for (int i = 0; i < list.size(); i++ ) {
-			String[] array = (String[])list.get(i);
-			out.print("[");
-			out.print('"' + array[0] + '"' + ',' + array[1] + ',' + '"' + array[2] + '"' + ',' + array[3]);
-			out.print("],");
-		}%>
-	];
+    <% List<PoRirekiBean> list = (List<PoRirekiBean>)request.getAttribute("list"); %> var dataArray = [
+        <% for (int i = 0; i < list.size(); i++ ) {
+        	PoRirekiBean rireki = (PoRirekiBean)list.get(i);
+            out.print("[");
+            out.print('"' + rireki.getCOL3() + '"' + ',' + rireki.getCOL4() + ',' + '"' + rireki.getCOL5() + '"' + ',' + rireki.getCOL6());
+            out.print("],");
+        }%>
+    ];
     <% List<String[]> columns_list = (List<String[]>)request.getAttribute("columns"); %>  var columnsArray = [
 		<% for (int i = 0; i < columns_list.size(); i++ ) {
 			String[] col_array = (String[])columns_list.get(i);
@@ -87,7 +90,7 @@
             about:'情報',
         }   
     });
-    </script>
+   </script>
 
 </body>  
 </html>

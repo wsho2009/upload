@@ -1,6 +1,8 @@
 package fax;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -8,6 +10,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Servlet implementation class resultServlet
@@ -30,49 +35,52 @@ public class resultServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		request.setCharacterEncoding("UTF-8"); // 文字化け防止
-		String loginId = "543412";
-		String loginName = "Form";
-		String code = "99";
-		String title = "アップロード";
+		String loginId = "test@login.com";
+		String loginName = "ログイン太郎";
+		String title = "履歴データ";
 		String unitId = "40952";
 		String unitStatus = "COMPLETE";
+		String url = request.getServletPath().substring(1);	//リクエストの中のサーブレット名(先頭/はずす)
 		
 		// 次の画面(jsp)に値を渡す
 		request.setAttribute("title", title);
 		request.setAttribute("id", loginId);
 		request.setAttribute("name", loginName);
-		request.setAttribute("code", code);
-
 		request.setAttribute("unitId", unitId);
 		request.setAttribute("unitStatus", unitStatus);
-	    //String[][] data = new String[][]{
-		//	{"2021/12/30", "3000", "2021/11/30", "3000"},
-		//	{"2021/12/30", "3000", "2021/11/30", "3000"},
-		//	{"2021/12/15", "3000", "2021/11/15", "3000"},
-		//	{"2021/12/15", "3000", "2021/11/15", "3000"},
-		//};
-	    ArrayList<String[]> list = new ArrayList<String[]>();
-	    String[] data1 = new String[]{"2021/12/15", "3000", "2021/11/30", "3000"};
-	    list.add(data1);
-	    String[] data2 = new String[]{"2021/12/15", "3000", "2021/11/30", "3000"};
-	    list.add(data2);
-	    String[] data3 = new String[]{"2021/12/30", "3000", "2021/11/15", "3000"};
-	    list.add(data3);
-	    String[] data4 = new String[]{"2021/12/30", "3000", "2021/11/15", "3000"};
-	    list.add(data4);
-		request.setAttribute("list", list);
+		request.setAttribute("url", url);
 
-	    ArrayList<String[]> columns = new ArrayList<String[]>();
-	    String[] cols1 = new String[]{"title:'客先要求納期'", "width:120", "type:'text'"};
-	    columns.add(cols1);
-	    String[] cols2 = new String[]{"title:'数量'", "width:80", "type:'numeric'"};
-	    columns.add(cols2);
-	    String[] cols3 = new String[]{"title:'営業希望納期'", "width:120", "type:'text'"};
-	    columns.add(cols3);
-	    String[] cols4 = new String[]{"title:'数量'", "width:80", "type:'numeric'"};
-	    columns.add(cols4);
-		request.setAttribute("columns", columns);
-		
+        try {
+	        //Javaオブジェクトに値をセット
+			ArrayList<PoRirekiBean> rireki = PoRirekiDAO.getInstance().readData(unitId);
+			request.setAttribute("list", rireki);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+        try {
+	        //Javaオブジェクトに値をセット
+			PoRirekiBean header = PoRirekiDAO.getInstance().readHeader(unitId);
+			//request.setAttribute("list", rireki);
+	        ArrayList<String[]> columns = new ArrayList<String[]>();
+		    String[] cols1 = new String[]{"title:'COL3'", "width:120", "type:'text'"};
+		    cols1[0] = cols1[0].replace("COL3", header.getCOL3()); 
+		    columns.add(cols1);
+		    String[] cols2 = new String[]{"title:'COL4'", "width:80", "type:'text'"};
+		    cols2[0] = cols2[0].replace("COL4", header.getCOL4()); 
+		    columns.add(cols2);
+		    String[] cols3 = new String[]{"title:'COL5'", "width:120", "type:'text'"};
+		    cols3[0] = cols3[0].replace("COL5", header.getCOL5()); 
+		    columns.add(cols3);
+		    String[] cols4 = new String[]{"title:'COL6'", "width:80", "type:'text'"};
+		    cols4[0] = cols4[0].replace("COL6", header.getCOL6()); 
+		    columns.add(cols4);
+			request.setAttribute("columns", columns);
+       
+        } catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 		// 次の画面に遷移
 		request.getRequestDispatcher("/result.jsp").forward(request, response);
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
@@ -82,8 +90,42 @@ public class resultServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+        //レスポンス
+        String type = request.getParameter("type");
+        System.out.println("type: " + type);
+        String unitId = request.getParameter("unitId");
+        System.out.println("unitId: " + unitId);      
+        //Form list 
+        if (type.startsWith("rireki")) {
+	        //レスポンス
+	        response.setCharacterEncoding("utf-8");
+			response.setContentType("application/json");
+        	PrintWriter out = response.getWriter();
+        
+	        try {
+		        //Javaオブジェクトに値をセット
+				ArrayList<PoRirekiBean> rireki = PoRirekiDAO.getInstance().readData(unitId);
+			    
+		        ObjectMapper mapper = new ObjectMapper();
+		        // 戻り値用のオブジェクト作成
+		        //Map<String, Object> resMap = new HashMap<>();
+		        //resMap.put("data", rireki);
+				//resMap.put("columns", columns);
+		        try {
+		            //JavaオブジェクトからJSONに変換
+		        	//String json = mapper.writeValueAsString(resMap);
+		        	String json = mapper.writeValueAsString(rireki);
+		            //JSONの出力
+		            System.out.println(json);
+		            out.write(json);
+		        } catch (JsonProcessingException e) {
+		            e.printStackTrace();
+		        }
+				out.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+        }
 	}
 
 }

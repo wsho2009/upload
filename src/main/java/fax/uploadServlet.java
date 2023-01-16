@@ -78,6 +78,7 @@ public class uploadServlet extends HttpServlet {
 		            //JavaオブジェクトからJSONに変換
 		            String json = mapper.writeValueAsString(select);
 		            //JSONの出力
+		            System.out.println(json);
 		            out.write(json);
 		        } catch (JsonProcessingException e) {
 		            e.printStackTrace();
@@ -100,6 +101,7 @@ public class uploadServlet extends HttpServlet {
 		            //JavaオブジェクトからJSONに変換
 		            String json = mapper.writeValueAsString(rireki);
 		            //JSONの出力
+		            System.out.println(json);
 		            out.write(json);
 		        } catch (JsonProcessingException e) {
 		            e.printStackTrace();

@@ -3,6 +3,10 @@
  */
 package fax;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -29,38 +33,16 @@ public class poFormDAO {
 		String PASS;
 		String sql;
 		//SQL作成
-        sql = "select * from todo";
+        sql = "select * from POFORMTABLE";
         //接続情報取得
 		ResourceBundle rb = ResourceBundle.getBundle("prop");
 		URL = rb.getString("URL");
 		USER = rb.getString("USER");
 		PASS = rb.getString("PASS");
 		
-		ArrayList<poFormBean> list = new ArrayList<poFormBean>();		
-        String[][] data = new String[][] {
-        	{"1","A0001","AAAAA","AAA_NAME","test@login.com"},
-        	{"2","B0002","BBBBB","BBB_NAME","test@login.com"}
-        };
-        poFormBean poForm = new poFormBean();
-		for (int i=0; i<2; i++) {
-			// ユーザIDと名前をBeanクラスへセット
-			poForm.setNo(Integer.parseInt(data[i][0]));
-			poForm.setCode(data[i][1]);
-			poForm.setFormId(data[i][2]);
-			poForm.setFormName(data[i][3]);
-			poForm.setMember(data[i][4]);
-        	// リストにBeanクラスごと格納
-			list.add(poForm);
-			//Beanクラスを初期化
-			poForm = new poFormBean();
-		}
-        
-		// リストを返す
-		return list;
-/*
 		//接続処理
 		Connection conn = null;
-		ArrayList<poFormBean> fax_dao = new ArrayList<poFormBean>();
+		ArrayList<poFormBean> list = new ArrayList<poFormBean>();		
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(URL,USER,PASS);
@@ -69,16 +51,17 @@ public class poFormDAO {
 			PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            poFormBean fax = new poFormBean();
+            poFormBean poForm = new poFormBean();
 			while(rs.next()) {
 				// ユーザIDと名前をBeanクラスへセット
-            	fax.setId(rs.getInt("id"));
-            	fax.setTodo(rs.getString("TODO"));
-            	fax.setTimeLimit(rs.getString("TIMELIMIT"));
-            	// リストにBeanクラスごと格納
-				fax_dao.add(fax);
+				poForm.setNo(rs.getInt("NO"));
+				poForm.setCode(rs.getString("CODE"));
+				poForm.setFormId(rs.getString("FORM_ID"));
+				poForm.setFormName(rs.getString("FORM_NAME"));
+				poForm.setMember(rs.getString("MEMBER"));
+				list.add(poForm);
 				//Beanクラスを初期化
-				fax = new poFormBean();
+				poForm = new poFormBean();
 			}
 			
 		} catch(SQLException sql_e) {
@@ -98,7 +81,6 @@ public class poFormDAO {
 			}
 		}
 		// リストを返す
-		return fax_dao;
-		*/
+		return list;
 	}
 }
