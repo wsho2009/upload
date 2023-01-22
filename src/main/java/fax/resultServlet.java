@@ -50,10 +50,32 @@ public class resultServlet extends HttpServlet {
 		request.setAttribute("unitStatus", unitStatus);
 		request.setAttribute("url", url);
 
+    	int col3_max = 0;
+    	int col4_max = 0;
+    	int col5_max = 0;
+    	int col6_max = 0;
         try {
 	        //Javaオブジェクトに値をセット
-			ArrayList<PoRirekiBean> rireki = PoRirekiDAO.getInstance().readData(unitId);
-			request.setAttribute("list", rireki);
+			ArrayList<PoRirekiBean> list = PoRirekiDAO.getInstance().readData(unitId);
+			for (int i=0; i<list.size(); i++) {
+				PoRirekiBean rireki = list.get(i);
+				if (col3_max < rireki.getCOL3().length()) {
+					col3_max = rireki.getCOL3().length();
+				}
+				if (col4_max < rireki.getCOL4().length()) {
+					col4_max = rireki.getCOL4().length();
+				}
+				if (col5_max < rireki.getCOL5().length()) {
+					col5_max = rireki.getCOL5().length();
+				}
+				if (col6_max < rireki.getCOL6().length()) {
+					col6_max = rireki.getCOL6().length();
+				}
+			}
+			System.out.println(col3_max + " " + col4_max + " " + col5_max + " " + col6_max);
+			
+			request.setAttribute("list", list);
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -61,18 +83,35 @@ public class resultServlet extends HttpServlet {
         try {
 	        //Javaオブジェクトに値をセット
 			PoRirekiBean header = PoRirekiDAO.getInstance().readHeader(unitId);
+			if (col3_max < header.getCOL3().length()) {
+				col3_max = header.getCOL3().length();
+			}
+			if (col4_max < header.getCOL4().length()) {
+				col4_max = header.getCOL4().length();
+			}
+			if (col5_max < header.getCOL5().length()) {
+				col5_max = header.getCOL5().length();
+			}
+			if (col6_max < header.getCOL6().length()) {
+				col6_max = header.getCOL6().length();
+			}
 			//request.setAttribute("list", rireki);
 	        ArrayList<String[]> columns = new ArrayList<String[]>();
-		    String[] cols1 = new String[]{"title:'COL3'", "width:120", "type:'text'"};
+	        String width;
+	        width = Integer.valueOf(col3_max*14).toString();
+		    String[] cols1 = new String[]{"title:'COL3'", "width:"+width, "type:'text'"};
 		    cols1[0] = cols1[0].replace("COL3", header.getCOL3()); 
 		    columns.add(cols1);
-		    String[] cols2 = new String[]{"title:'COL4'", "width:80", "type:'text'"};
+	        width = Integer.valueOf(col4_max*14).toString();
+		    String[] cols2 = new String[]{"title:'COL4'", "width:"+width, "type:'text'"};
 		    cols2[0] = cols2[0].replace("COL4", header.getCOL4()); 
 		    columns.add(cols2);
-		    String[] cols3 = new String[]{"title:'COL5'", "width:120", "type:'text'"};
+	        width = Integer.valueOf(col5_max*14).toString();
+		    String[] cols3 = new String[]{"title:'COL5'", "width:"+width, "type:'text'"};
 		    cols3[0] = cols3[0].replace("COL5", header.getCOL5()); 
 		    columns.add(cols3);
-		    String[] cols4 = new String[]{"title:'COL6'", "width:80", "type:'text'"};
+	        width = Integer.valueOf(col6_max*14).toString();
+		    String[] cols4 = new String[]{"title:'COL6'", "width:"+width, "type:'text'"};
 		    cols4[0] = cols4[0].replace("COL6", header.getCOL6()); 
 		    columns.add(cols4);
 			request.setAttribute("columns", columns);

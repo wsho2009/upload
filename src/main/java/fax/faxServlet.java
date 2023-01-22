@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class faxServlet
  */
-@WebServlet("/faxServlet")
+@WebServlet("/fax")
 public class faxServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

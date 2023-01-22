@@ -10,17 +10,17 @@
   <meta charset="UTF-8">
   <title><%= request.getAttribute("title") %></title>
   <script type="text/javascript" src="js/jquery-3.5.1.min.js"></script>
+  <script type="text/javascript" src="js/jquery.tablesorter.combined.min.js"></script>
   <script type="text/javascript" src="js/jquery-ui.min.js"></script>
   <%--<script type="text/javascript" src="js/jquery.ui.datepicker-ja.min.js"></script>--%>
-  <script type="text/javascript" src="js/jquery.tablesorter.combined.min.js"></script>
   
-  <link href="css/w3-theme-blue.css">
+  <link href="css/theme.blue.css">
   <link href="css/jquery-ui.css" rel="stylesheet">
-  <link href="css/theme.default.min.css" rel="stylesheet">
+  <%--<link href="css/theme.default.min.css" rel="stylesheet">--%>
   <script type="text/javascript">
     $(document).ready(function() {
-		$("table").tablesorter();
-		//$("table").tablesorter({
+    	$("table").tablesorter();
+    	//$("table").tablesorter({
 		//	theme: 'blue',
 		//	widthFixed: true,
 		//	widgets: ['zebra', 'columns', 'resizable', 'sticyHeaders'],
@@ -106,7 +106,7 @@
   	  	}
   	};
   </script>
-  <form action=faxServlet method="post">
+  <form action=fax method="post">
      Form: <input type="text" name="form">
      Date:  <input type="date" name="date">
      <button type="submit">Find</button><br>
