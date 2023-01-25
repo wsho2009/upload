@@ -28,18 +28,18 @@ public class PoRirekiDAO {
 	// 検索処理
 	// 戻り値		：ArrayList<Beanクラス>
 	public ArrayList<PoRirekiBean> readData(String unitId) throws SQLException {
-		String URL;
-		String USER;
-		String PASS;
-		String sql;
-		//SQL作成
-		String fields = "COL3,COL4,COL5,COL6";
-        sql = "select " + fields + " from PORIREKITABLE where COL0 = ? and COL1 <> '0' order by COL1";
+		int dataWidth = 4;
+		String fields = "";
+		for(int i=0; i<dataWidth; i++) {
+        	fields = fields + "COL" + (i+3) + ",";
+		}
+		fields = fields.substring(0, fields.length() - 1);	//末尾 , 削除
+		String sql = "select " + fields + " from PORIREKITABLE where COL0 = ? and COL1 <> '0' order by COL1";
         //接続情報取得
 		ResourceBundle rb = ResourceBundle.getBundle("prop");
-		URL = rb.getString("URL");
-		USER = rb.getString("USER");
-		PASS = rb.getString("PASS");
+		String URL = rb.getString("URL");
+		String USER = rb.getString("USER");
+		String PASS = rb.getString("PASS");
 		
 		//接続処理
 		Connection conn = null;
@@ -52,14 +52,13 @@ public class PoRirekiDAO {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, unitId);
             ResultSet rs = ps.executeQuery();
-
+            
             PoRirekiBean rireki = new PoRirekiBean();
 			while(rs.next()) {
 				// ユーザIDと名前をBeanクラスへセット
-            	rireki.setCOL3(rs.getString("COL3"));
-            	rireki.setCOL4(rs.getString("COL4"));
-            	rireki.setCOL5(rs.getString("COL5"));
-            	rireki.setCOL6(rs.getString("COL6"));
+				for(int i=0; i<dataWidth; i++) {
+	            	rireki.setCOL(i, rs.getString("COL"+(i+3)));
+				}
             	// リストにBeanクラスごと格納
 				list.add(rireki);
 				//Beanクラスを初期化
@@ -86,18 +85,18 @@ public class PoRirekiDAO {
 		return list;
 	}
 	public PoRirekiBean readHeader(String unitId) throws SQLException {
-		String URL;
-		String USER;
-		String PASS;
-		String sql;
-		//SQL作成
-		String fields = "COL3,COL4,COL5,COL6";
-        sql = "select " + fields + " from PORIREKITABLE where COL0 = ? and COL1 = '0' order by COL1";
+ 		int dataWidth = 4;
+		String fields = "";
+		for(int i=0; i<dataWidth; i++) {
+        	fields = fields + "COL" + (i+3) + ",";
+		}
+		fields = fields.substring(0, fields.length() - 1);	//末尾 , 削除
+		String sql = "select " + fields + " from PORIREKITABLE where COL0 = ? and COL1 = '0' order by COL1";
         //接続情報取得
 		ResourceBundle rb = ResourceBundle.getBundle("prop");
-		URL = rb.getString("URL");
-		USER = rb.getString("USER");
-		PASS = rb.getString("PASS");
+		String URL = rb.getString("URL");
+		String USER = rb.getString("USER");
+		String PASS = rb.getString("PASS");
 		
 		//接続処理
 		Connection conn = null;
@@ -114,10 +113,9 @@ public class PoRirekiDAO {
 
 			while(rs.next()) {
 				// ユーザIDと名前をBeanクラスへセット
-            	rireki.setCOL3(rs.getString("COL3"));
-            	rireki.setCOL4(rs.getString("COL4"));
-            	rireki.setCOL5(rs.getString("COL5"));
-            	rireki.setCOL6(rs.getString("COL6"));
+				for(int i=0; i<dataWidth; i++) {
+	            	rireki.setCOL(i, rs.getString("COL"+(i+3)));
+				}
             	// リストにBeanクラスごと格納
             	//list.add(rireki);
 				//Beanクラスを初期化

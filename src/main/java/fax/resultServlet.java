@@ -33,7 +33,6 @@ public class resultServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		request.setCharacterEncoding("UTF-8"); // 文字化け防止
 		String loginId = "test@login.com";
 		String loginName = "ログイン太郎";
@@ -49,33 +48,27 @@ public class resultServlet extends HttpServlet {
 		request.setAttribute("unitId", unitId);
 		request.setAttribute("unitStatus", unitStatus);
 		request.setAttribute("url", url);
-
-    	int col3_max = 0;
-    	int col4_max = 0;
-    	int col5_max = 0;
-    	int col6_max = 0;
+		int dataWidth = 4;
+		//int col_width[]
+		//col_width = new int[dataWidth];
+		int col_width[] = new int[dataWidth];;
         try {
 	        //Javaオブジェクトに値をセット
 			ArrayList<PoRirekiBean> list = PoRirekiDAO.getInstance().readData(unitId);
+			//4列
 			for (int i=0; i<list.size(); i++) {
 				PoRirekiBean rireki = list.get(i);
-				if (col3_max < rireki.getCOL3().length()) {
-					col3_max = rireki.getCOL3().length();
-				}
-				if (col4_max < rireki.getCOL4().length()) {
-					col4_max = rireki.getCOL4().length();
-				}
-				if (col5_max < rireki.getCOL5().length()) {
-					col5_max = rireki.getCOL5().length();
-				}
-				if (col6_max < rireki.getCOL6().length()) {
-					col6_max = rireki.getCOL6().length();
+				for (int j=0; j<dataWidth; j++) {
+					if (col_width[j] < rireki.getCOL(j).length()) {
+						col_width[j] = rireki.getCOL(j).length();
+					}
 				}
 			}
-			System.out.println(col3_max + " " + col4_max + " " + col5_max + " " + col6_max);
-			
+			for (int i=0; i<dataWidth; i++) {
+				System.out.print(col_width[i] + " ");	//各カラムの文字数
+			}
+			System.out.println("");
 			request.setAttribute("list", list);
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -83,37 +76,20 @@ public class resultServlet extends HttpServlet {
         try {
 	        //Javaオブジェクトに値をセット
 			PoRirekiBean header = PoRirekiDAO.getInstance().readHeader(unitId);
-			if (col3_max < header.getCOL3().length()) {
-				col3_max = header.getCOL3().length();
-			}
-			if (col4_max < header.getCOL4().length()) {
-				col4_max = header.getCOL4().length();
-			}
-			if (col5_max < header.getCOL5().length()) {
-				col5_max = header.getCOL5().length();
-			}
-			if (col6_max < header.getCOL6().length()) {
-				col6_max = header.getCOL6().length();
+			for (int j=0; j<col_width.length; j++) {
+				if (col_width[j] < header.getCOL(j).length()) {
+					col_width[j] = header.getCOL(j).length();
+				}
 			}
 			//request.setAttribute("list", rireki);
 	        ArrayList<String[]> columns = new ArrayList<String[]>();
 	        String width;
-	        width = Integer.valueOf(col3_max*14).toString();
-		    String[] cols1 = new String[]{"title:'COL3'", "width:"+width, "type:'text'"};
-		    cols1[0] = cols1[0].replace("COL3", header.getCOL3()); 
-		    columns.add(cols1);
-	        width = Integer.valueOf(col4_max*14).toString();
-		    String[] cols2 = new String[]{"title:'COL4'", "width:"+width, "type:'text'"};
-		    cols2[0] = cols2[0].replace("COL4", header.getCOL4()); 
-		    columns.add(cols2);
-	        width = Integer.valueOf(col5_max*14).toString();
-		    String[] cols3 = new String[]{"title:'COL5'", "width:"+width, "type:'text'"};
-		    cols3[0] = cols3[0].replace("COL5", header.getCOL5()); 
-		    columns.add(cols3);
-	        width = Integer.valueOf(col6_max*14).toString();
-		    String[] cols4 = new String[]{"title:'COL6'", "width:"+width, "type:'text'"};
-		    cols4[0] = cols4[0].replace("COL6", header.getCOL6()); 
-		    columns.add(cols4);
+	        String[] cols;
+	        for (int i=0; i<dataWidth; i++) {
+		        width = Integer.valueOf(col_width[i]*14).toString();
+			    cols = new String[]{"title:'" + header.getCOL(i) +"'", "width:"+width, "type:'text'"};
+			    columns.add(cols);
+	        }
 			request.setAttribute("columns", columns);
        
         } catch (SQLException e) {

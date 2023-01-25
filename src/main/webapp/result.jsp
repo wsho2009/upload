@@ -52,10 +52,12 @@
 
     <script>
     <% List<PoRirekiBean> list = (List<PoRirekiBean>)request.getAttribute("list"); %> var dataArray = [
-        <% for (int i = 0; i < list.size(); i++ ) {
+        <% for (int i=0; i<list.size(); i++ ) {
         	PoRirekiBean rireki = (PoRirekiBean)list.get(i);
             out.print("[");
-            out.print('"' + rireki.getCOL3() + '"' + ',' + rireki.getCOL4() + ',' + '"' + rireki.getCOL5() + '"' + ',' + rireki.getCOL6());
+            for (int j=0; j<4; j++ ) {
+            	out.print('"' + rireki.getCOL(j) + '"' + ',');
+            }
             out.print("],");
         }%>
     ];
@@ -63,7 +65,7 @@
 		<% for (int i = 0; i < columns_list.size(); i++ ) {
 			String[] col_array = (String[])columns_list.get(i);
 			out.print("{");
-			out.print(col_array[0] + ',' + col_array[1] + ',' + col_array[2]);
+			out.print(col_array[0] + ',' + col_array[1] + ',' + col_array[2]);	//title,width,typeの３カラムは固定
 			out.print("},");
 		}%>
 	];

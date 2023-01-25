@@ -2,3 +2,8 @@
 
 【サーブレット＆jsp】データベースのデータを表示する
 https://uha-blog.com/java/servlet-database-display/
+
+■Jsonライブラリ
+jackson-annotations-2.14.1.jar
+jackson-core-2.14.1.jar
+jackson-databind-2.14.1.jar

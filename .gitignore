@@ -1,3 +1,4 @@
 /build
 src/main/webapp/js
 src/main/webapp/css
+src/main/java/prop.properties
