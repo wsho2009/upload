@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -37,7 +39,7 @@ public class resultServlet extends HttpServlet {
 		String loginId = "test@login.com";
 		String loginName = "ログイン太郎";
 		String title = "履歴データ";
-		String unitId = "40952";
+		String unitId = "40951";
 		String unitStatus = "COMPLETE";
 		String url = request.getServletPath().substring(1);	//リクエストの中のサーブレット名(先頭/はずす)
 		
@@ -48,13 +50,12 @@ public class resultServlet extends HttpServlet {
 		request.setAttribute("unitId", unitId);
 		request.setAttribute("unitStatus", unitStatus);
 		request.setAttribute("url", url);
+/*
 		int dataWidth = 4;
-		//int col_width[]
-		//col_width = new int[dataWidth];
 		int col_width[] = new int[dataWidth];;
         try {
 	        //Javaオブジェクトに値をセット
-			ArrayList<PoRirekiBean> list = PoRirekiDAO.getInstance().readData(unitId);
+			ArrayList<PoRirekiBean> list = PoRirekiDAO.getInstance().readData(unitId, dataWidth);
 			//4列
 			for (int i=0; i<list.size(); i++) {
 				PoRirekiBean rireki = list.get(i);
@@ -72,7 +73,7 @@ public class resultServlet extends HttpServlet {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
+		
         try {
 	        //Javaオブジェクトに値をセット
 			PoRirekiBean header = PoRirekiDAO.getInstance().readHeader(unitId);
@@ -87,7 +88,7 @@ public class resultServlet extends HttpServlet {
 	        String[] cols;
 	        for (int i=0; i<dataWidth; i++) {
 		        width = Integer.valueOf(col_width[i]*14).toString();
-			    cols = new String[]{"title:'" + header.getCOL(i) +"'", "width:"+width, "type:'text'"};
+			    cols = new String[]{"title:'" + header.getCOL(i) +"'", "name:COL"+i, "width:"+width, "type:'text'"};
 			    columns.add(cols);
 	        }
 			request.setAttribute("columns", columns);
@@ -95,7 +96,7 @@ public class resultServlet extends HttpServlet {
         } catch (SQLException e) {
 			e.printStackTrace();
 		}
-
+*/
 		// 次の画面に遷移
 		request.getRequestDispatcher("/result.jsp").forward(request, response);
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
@@ -111,25 +112,63 @@ public class resultServlet extends HttpServlet {
         String unitId = request.getParameter("unitId");
         System.out.println("unitId: " + unitId);      
         //Form list 
-        if (type.startsWith("rireki")) {
+        if (type.equals("rireki") == true) {
 	        //レスポンス
 	        response.setCharacterEncoding("utf-8");
 			response.setContentType("application/json");
         	PrintWriter out = response.getWriter();
         
+    		int dataWidth = 4;
+    		int col_width[] = new int[dataWidth];;
 	        try {
 		        //Javaオブジェクトに値をセット
-				ArrayList<PoRirekiBean> rireki = PoRirekiDAO.getInstance().readData(unitId);
-			    
+				ArrayList<PoRirekiBean> datalist = PoRirekiDAO.getInstance().readData(unitId, dataWidth);
+				for (int i=0; i<datalist.size(); i++) {
+					PoRirekiBean rireki = datalist.get(i);
+					for (int j=0; j<dataWidth; j++) {
+						int len = rireki.getCOL(j).getBytes("Shift_JIS").length;
+						if (col_width[j] < len) {
+							col_width[j] = len;
+						}
+					}
+				}
+				/*for (int i=0; i<dataWidth; i++) {
+					System.out.print(i + ":" + col_width[i] + " ");	//各カラムの文字数
+				}*/
+				System.out.println("");
+				PoRirekiBean header = PoRirekiDAO.getInstance().readHeader(unitId);
+				for (int j=0; j<dataWidth; j++) {
+					int len = header.getCOL(j).getBytes("Shift_JIS").length;
+					if (col_width[j] < len) {
+						col_width[j] = len;
+					}
+				}
+				/*for (int i=0; i<dataWidth; i++) {
+					System.out.print(i + ":" + col_width[i] + " ");	//各カラムの文字数
+				}
+				System.out.println("");*/
+		        ArrayList<PoRirekiColmunsBean> columns = new ArrayList<PoRirekiColmunsBean>();
+		        String width;
+		        PoRirekiColmunsBean cols;
+		        for (int i=0; i<7; i++) {
+		        	if (i < dataWidth) {
+				        width = Integer.valueOf(col_width[i]*14).toString();
+					    cols = new PoRirekiColmunsBean(header.getCOL(i), "COL"+i, width, "text");
+		        	} else {
+					    cols = new PoRirekiColmunsBean("", "COL"+i, "0", "hidden");
+		        	}
+				    columns.add(cols);
+		        }
+		        
 		        ObjectMapper mapper = new ObjectMapper();
 		        // 戻り値用のオブジェクト作成
-		        //Map<String, Object> resMap = new HashMap<>();
-		        //resMap.put("data", rireki);
-				//resMap.put("columns", columns);
+		        Map<String, Object> resMap = new HashMap<>();
+		        resMap.put("datalist", datalist);
+				resMap.put("columns", columns);
 		        try {
 		            //JavaオブジェクトからJSONに変換
-		        	//String json = mapper.writeValueAsString(resMap);
-		        	String json = mapper.writeValueAsString(rireki);
+		        	String json = mapper.writeValueAsString(resMap);
+		        	//String json = mapper.writeValueAsString(rireki);	//単体jsonのケース
 		            //JSONの出力
 		            System.out.println(json);
 		            out.write(json);
@@ -142,5 +181,4 @@ public class resultServlet extends HttpServlet {
 			}
         }
 	}
-
 }

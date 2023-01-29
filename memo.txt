@@ -3,7 +3,28 @@
 【サーブレット＆jsp】データベースのデータを表示する
 https://uha-blog.com/java/servlet-database-display/
 
+D:\pleiades\2022-06\tomcat\9\lib
+■jdbcライブラリ
+ojdbc11.jar
+
 ■Jsonライブラリ
 jackson-annotations-2.14.1.jar
 jackson-core-2.14.1.jar
 jackson-databind-2.14.1.jar
+
+■tablesorter
+https://qiita.com/ryo19841204/items/17bf85ffb3912b7f9bd5
+https://mottie.github.io/tablesorter/docs/index.html
+
+■jspreadsheet
+https://www.tohoho-web.com/ex/jspreadsheet.html
+https://github.com/jspreadsheet/ce#as-standalone-libraryjs-plugin
+https://bossanova.uk/jspreadsheet/v4/examples/table-style
+
+■検索画面
+〇上部を固定 下段スクロール
+https://www.webopixel.net/javascript/535.html
+https://coco-factory.jp/ugokuweb/move01/5-1-5/
+https://yuyauver98.me/scroll-stickheader/
+https://kame--code.com/header-fixed/
+

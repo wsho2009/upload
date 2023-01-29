@@ -27,8 +27,7 @@ public class PoRirekiDAO {
 
 	// 検索処理
 	// 戻り値		：ArrayList<Beanクラス>
-	public ArrayList<PoRirekiBean> readData(String unitId) throws SQLException {
-		int dataWidth = 4;
+	public ArrayList<PoRirekiBean> readData(String unitId, int dataWidth) throws SQLException {
 		String fields = "";
 		for(int i=0; i<dataWidth; i++) {
         	fields = fields + "COL" + (i+3) + ",";
