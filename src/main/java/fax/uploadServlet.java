@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Servlet implementation class uploadServlet
  */
-@WebServlet("/uploadServlet")
+@WebServlet("/upload")
 @MultipartConfig(fileSizeThreshold = 5000000, maxFileSize = 700 * 1024 * 1024, location = "d:/pleiades")
 public class uploadServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -65,7 +65,7 @@ public class uploadServlet extends HttpServlet {
         String userId = request.getParameter("id");
         System.out.println("userId: " + userId);      
         //Form list 
-        if (type.startsWith("select")) {
+        if (type.equals("select") == true) {
 	        //レスポンス
 	        response.setCharacterEncoding("utf-8");
 			response.setContentType("application/json");
@@ -88,7 +88,7 @@ public class uploadServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 	    //History list
-        } else if (type.startsWith("rireki")) {
+        } else if (type.equals("rireki") == true) {
 	        //レスポンス
 	        response.setCharacterEncoding("utf-8");
 			response.setContentType("application/json");
@@ -110,7 +110,7 @@ public class uploadServlet extends HttpServlet {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-        } else if (type.startsWith("upload")) {
+        } else if (type.equals("upload") == true) {
 	        String user = request.getParameter("user");
 	        System.out.println(user);
 	        String code = request.getParameter("code");
@@ -132,6 +132,27 @@ public class uploadServlet extends HttpServlet {
 			name = formId + "_" + dtStr + ".pdf";
 			part.write(name);	//ファイル保存
 			
+			
+			/*------------------------------------------------------------*/
+			String toriCd;
+			String ch = formId.substring(5, 1);	//6桁目
+			if (ch.equals("") == true) {
+				toriCd = formId.substring(0, 5);
+			} else {
+				toriCd = formId.substring(0, 6);
+			}
+			System.out.println(part.getContentType());
+			if (part.getContentType() == "application/pdf") {
+				//pdfファイルは、OCR
+				//String dtStr = dt.substring(0,4) + dt.substring(5,7) + dt.substring(8,10) + dt.substring(11,13) + dt.substring(14,16) + dt.substring(17,19);
+				String fileName = toriCd + "_" + dtStr + ".pdf";
+				registerOcrProcess(formId, formName, fileName);
+
+			} else {
+				//直接ファイル渡し
+			}
+			/*------------------------------------------------------------*/
+			
 			response.setCharacterEncoding("utf-8");
 			response.setContentType("application/json");
 			
@@ -144,7 +165,12 @@ public class uploadServlet extends HttpServlet {
 
 		//doGet(request, response);
     }
-    private String getFilename(Part part) {
+    private void registerOcrProcess(String formId, String formName, String fileName) {
+		// TODO 自動生成されたメソッド・スタブ
+		
+	}
+
+	private String getFilename(Part part) {
         for (String cd : part.getHeader("Content-Disposition").split(";")) {
             if (cd.trim().startsWith("filename")) {
                 return cd.substring(cd.indexOf('=') + 1).trim()

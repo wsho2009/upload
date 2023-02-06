@@ -12,7 +12,7 @@
   	$(function() {
   	  	var id = "<%= request.getAttribute("id") %>";
   	  	console.log('id='+id);
-	    $.post('uploadServlet', 'type=select&id='+id)
+	    $.post('upload', 'type=select&id='+id)
         .done(function(data) {
           	// 通信成功時のコールバック
           	console.log(data);
@@ -37,7 +37,7 @@
         //  // 常に実行する処理
         });
 
-   	    $.post('uploadServlet', 'type=rireki&id='+id)
+   	    $.post('upload', 'type=rireki&id='+id)
         .done(function (data) {
             // 通信成功時のコールバック
             console.log(data);
@@ -212,7 +212,7 @@
 			console.log(formData);
 
 	        $.ajax({
-	            url: 'uploadServlet',
+	            url: 'upload',
 	            type: 'post',
 	            processData: false,
 	            contentType: false, // 送信するデータをFormDataにする場合、こうしないといけない。

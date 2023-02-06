@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="fax.faxBean" %>
+<%@ page import="konyurireki.konyuBean" %>
 <%@ page import="java.sql.ResultSet"%>
 <%@ page import="java.util.List"%>
 
@@ -10,21 +10,35 @@
   <meta charset="UTF-8">
   <title><%= request.getAttribute("title") %></title>
   <script type="text/javascript" src="js/jquery-3.5.1.min.js"></script>
-  <script type="text/javascript" src="js/jquery.tablesorter.combined.min.js"></script>
   <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="js/jquery.tablesorter.combined.min.js"></script>
+  <script src="js/extras/jquery.tablesorter.pager.min.js"></script>
+  <script type="text/javascript" src="js/widgets/widget-scroller.min.js"></script>
   <%--<script type="text/javascript" src="js/jquery.ui.datepicker-ja.min.js"></script>--%>
   
-  <link href="css/theme.blue.css">
-  <link href="css/jquery-ui.css" rel="stylesheet">
-  <%--<link href="css/theme.default.min.css" rel="stylesheet">--%>
+  <link rel="stylesheet" href="css/theme.blue.css">
+  <link rel="stylesheet" href="css/jquery-ui.css">
   <script type="text/javascript">
     $(document).ready(function() {
-    	$("table").tablesorter();
-    	//$("table").tablesorter({
-		//	theme: 'blue',
-		//	widthFixed: true,
-		//	widgets: ['zebra', 'columns', 'resizable', 'sticyHeaders'],
-		//});
+    	$("table").tablesorter({
+			theme: 'blue',
+			widthFixed: true,
+			//zebra:1行ごとに色を変える
+			//columns:選択した列の色を変える
+			//filter:列にフィルタ機能を追加する
+			//resizable:列のリサイズをする
+			//stickyHeaders:スクロールの際にヘッダを固定する	????
+			//scroller:ヘッダを固定
+            //widgets: ['zebra', 'columns', 'filter', 'pager', 'resizable', 'stickyHeaders'],
+			widgets: ['zebra', 'columns', 'resizable', 'pager', 'sticyHeaders', 'scroller'],
+	        widgetOptions: {
+	            // テーブルの髙さの指定
+	            scroller_height : 500
+	        }
+		});
+		$("table").tablesorterPager({
+			container: $(".pager"),
+		});
 	});
   	$(function() {
 		$(".datepicker").datepicker();
@@ -112,34 +126,51 @@
      <button type="submit">Find</button><br>
      <chuui>IEサポート終了に伴い...</chuui>
   </form>
-  <table id="table" class="tablesorter">
+  <div id="pager" class="pager">
+    <button type="button" class="first"><<</button>
+    <button type="button" class="prev"><</button>
+    <span class="pagedisplay"></span>
+    <button type="button" class="next">></button>
+    <button type="button" class="last">>></button>
+    <select class="pagesize" title="Select page size">
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+        <option value="40">40</option>
+    </select>
+    <select class="gotoPage" title="Select page number"></select>
+  </div>
+  <table id="table" class="tablesorter">	 <!--tablesorter-blue-->
   	<thead><tr align=center>
-<!--   		<th style="font-size: 11pt;">No</th>
-  		<th style="font-size: 11pt;">FaxNo</th>
-  		<th style="font-size: 11pt;">Date</th>
-  		<th style="font-size: 11pt;">File</th>
-  		<th style="font-size: 11pt;">FAX</th>
-  		<th style="font-size: 11pt;">OCR</th> -->
-  		<th style="font-size: 11pt;">ID</th>
-  		<th style="font-size: 11pt;">TODO</th>
-  		<th style="font-size: 11pt;">TIMELIMIT</th>
+   		<th style="font-size: 11pt;">No</th>
+  		<th style="font-size: 11pt;">日付</th>
+  		<th style="font-size: 11pt;">購入先</th>
+  		<th style="font-size: 11pt;">種別</th>
+  		<th style="font-size: 11pt;">品名</th>
+  		<th style="font-size: 11pt;">価格</th>
+  		<th style="font-size: 11pt;">送料</th>
+  		<th style="font-size: 11pt;">合計</th>
   	</tr></thead>
    	<tbody>
    		<% 
-   		List<faxBean> list = (List<faxBean>)request.getAttribute("list");
+   		List<konyuBean> list = (List<konyuBean>)request.getAttribute("list");
    		for (int i=0; i<list.size(); i++) {
-   			faxBean fax = (faxBean)list.get(i);
+   			konyuBean konyu = (konyuBean)list.get(i);
    		%>
  		<tr>
-  			<td><%= fax.getId() %></td>
-  			<td><%= fax.getTodo() %></td>
-  			<td><%= fax.getTimeLimit() %></td>
+  			<td><%= konyu.getNo() %></td>
+  			<td><%= konyu.getHizuke() %></td>
+  			<td><%= konyu.getKonnyusaki() %></td>
+  			<td><%= konyu.getSyubetsu() %></td>
+  			<td><%= konyu.getHinmei() %></td>
+  			<td><%= konyu.getKakaku() %></td>
+  			<td><%= konyu.getSoryo() %></td>
+  			<td><%= konyu.getKakakuKie() %></td>
   		</tr>
   		<%
   		}
    		%>
   	</tbody>
-
   </table>
 </body>  
 </html>

@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import konyurireki.konyuBean;
+import konyurireki.konyuDAO;
+
 /**
  * Servlet implementation class faxServlet
  */
@@ -29,9 +32,10 @@ public class faxServlet extends HttpServlet {
 		String unitId = "40952";
 		String unitStatus = "COMPLETE";
 		
-        ArrayList<faxBean> list;
+        ArrayList<konyuBean> list;
 		try {
-	        list = faxDAO.getInstance().read();
+			String Konnyusaki = null;
+	        list = konyuDAO.getInstance().read(Konnyusaki);
 		} catch (SQLException e) {
 			list = null;
 			e.printStackTrace();

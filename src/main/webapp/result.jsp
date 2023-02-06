@@ -41,7 +41,7 @@
 	        .done(function(data) {
 	          	// 通信成功時のコールバック
 	          	console.log(data);
-	            jspreadsheet(document.getElementById('spreadsheet'), {
+	            var spreadsheet =jspreadsheet(document.getElementById('spreadsheet'), {
 	                //data: dataArray,
 	                data: data.datalist,
 	                columns: data.columns,
@@ -65,7 +65,7 @@
 	                    about:'情報',
 	                }   
 	            });
-	          	/*$.each(data, function(i, val) {
+	            /*$.each(data, function(i, val) {
 	          	});*/
 	        }).fail(function () {
 	          // 通信失敗時のコールバック
