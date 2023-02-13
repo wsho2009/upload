@@ -19,14 +19,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Servlet implementation class resultServlet
  */
-@WebServlet("/resultServlet")
-public class resultServlet extends HttpServlet {
+@WebServlet("/result")
+public class ResultServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public resultServlet() {
+    public ResultServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -55,10 +55,10 @@ public class resultServlet extends HttpServlet {
 		int col_width[] = new int[dataWidth];;
         try {
 	        //Javaオブジェクトに値をセット
-			ArrayList<PoRirekiBean> list = PoRirekiDAO.getInstance().readData(unitId, dataWidth);
+			ArrayList<OcrRirekiBean> list = OcrRirekiDAO.getInstance().readData(unitId, dataWidth);
 			//4列
 			for (int i=0; i<list.size(); i++) {
-				PoRirekiBean rireki = list.get(i);
+				OcrRirekiBean rireki = list.get(i);
 				for (int j=0; j<dataWidth; j++) {
 					if (col_width[j] < rireki.getCOL(j).length()) {
 						col_width[j] = rireki.getCOL(j).length();
@@ -76,7 +76,7 @@ public class resultServlet extends HttpServlet {
 		
         try {
 	        //Javaオブジェクトに値をセット
-			PoRirekiBean header = PoRirekiDAO.getInstance().readHeader(unitId);
+			OcrRirekiBean header = OcrRirekiDAO.getInstance().readHeader(unitId);
 			for (int j=0; j<col_width.length; j++) {
 				if (col_width[j] < header.getCOL(j).length()) {
 					col_width[j] = header.getCOL(j).length();
@@ -122,9 +122,9 @@ public class resultServlet extends HttpServlet {
     		int col_width[] = new int[dataWidth];;
 	        try {
 		        //Javaオブジェクトに値をセット
-				ArrayList<PoRirekiBean> datalist = PoRirekiDAO.getInstance().readData(unitId, dataWidth);
+				ArrayList<OcrRirekiBean> datalist = OcrRirekiDAO.getInstance().readData(unitId, dataWidth);
 				for (int i=0; i<datalist.size(); i++) {
-					PoRirekiBean rireki = datalist.get(i);
+					OcrRirekiBean rireki = datalist.get(i);
 					for (int j=0; j<dataWidth; j++) {
 						int len = rireki.getCOL(j).getBytes("Shift_JIS").length;
 						if (col_width[j] < len) {
@@ -136,7 +136,7 @@ public class resultServlet extends HttpServlet {
 					System.out.print(i + ":" + col_width[i] + " ");	//各カラムの文字数
 				}*/
 				System.out.println("");
-				PoRirekiBean header = PoRirekiDAO.getInstance().readHeader(unitId);
+				OcrRirekiBean header = OcrRirekiDAO.getInstance().readHeader(unitId);
 				for (int j=0; j<dataWidth; j++) {
 					int len = header.getCOL(j).getBytes("Shift_JIS").length;
 					if (col_width[j] < len) {
@@ -147,15 +147,15 @@ public class resultServlet extends HttpServlet {
 					System.out.print(i + ":" + col_width[i] + " ");	//各カラムの文字数
 				}
 				System.out.println("");*/
-		        ArrayList<PoRirekiColmunsBean> columns = new ArrayList<PoRirekiColmunsBean>();
+		        ArrayList<OcrColmunsBean> columns = new ArrayList<OcrColmunsBean>();
 		        String width;
-		        PoRirekiColmunsBean cols;
+		        OcrColmunsBean cols;
 		        for (int i=0; i<7; i++) {
 		        	if (i < dataWidth) {
 				        width = Integer.valueOf(col_width[i]*14).toString();
-					    cols = new PoRirekiColmunsBean(header.getCOL(i), "COL"+i, width, "text");
+					    cols = new OcrColmunsBean(header.getCOL(i), "COL"+i, width, "text");
 		        	} else {
-					    cols = new PoRirekiColmunsBean("", "COL"+i, "0", "hidden");
+					    cols = new OcrColmunsBean("", "COL"+i, "0", "hidden");
 		        	}
 				    columns.add(cols);
 		        }

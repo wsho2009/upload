@@ -5,7 +5,7 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-public class PoRirekiBean implements Serializable {
+public class OcrRirekiBean implements Serializable {
 //import com.fasterxml.jackson.annotation.JsonProperty;
     @JsonProperty("COL0")
 	private String COL0;
@@ -21,7 +21,7 @@ public class PoRirekiBean implements Serializable {
 	private String COL5;
     @JsonProperty("COL6")
 	private String COL6;
-	public PoRirekiBean() {
+	public OcrRirekiBean() {
 		//COL = new String[4];
 	}
 	public void setCOL(int index, String col) { 

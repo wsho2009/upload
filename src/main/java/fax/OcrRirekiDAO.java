@@ -15,19 +15,19 @@ import java.util.ResourceBundle;
  * @author PC
  *
  */
-public class PoRirekiDAO {
+public class OcrRirekiDAO {
 	
-	public PoRirekiDAO() {
+	public OcrRirekiDAO() {
 	}
 
 	// インスタンスオブジェクトの生成->返却（コードの簡略化）
-	public static PoRirekiDAO getInstance() {
-		return new PoRirekiDAO();
+	public static OcrRirekiDAO getInstance() {
+		return new OcrRirekiDAO();
 	}
 
 	// 検索処理
 	// 戻り値		：ArrayList<Beanクラス>
-	public ArrayList<PoRirekiBean> readData(String unitId, int dataWidth) throws SQLException {
+	public ArrayList<OcrRirekiBean> readData(String unitId, int dataWidth) throws SQLException {
 		String fields = "";
 		for(int i=0; i<dataWidth; i++) {
         	fields = fields + "COL" + (i+3) + ",";
@@ -42,7 +42,7 @@ public class PoRirekiDAO {
 		
 		//接続処理
 		Connection conn = null;
-		ArrayList<PoRirekiBean> list = new ArrayList<PoRirekiBean>();
+		ArrayList<OcrRirekiBean> list = new ArrayList<OcrRirekiBean>();
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(URL,USER,PASS);
@@ -52,7 +52,7 @@ public class PoRirekiDAO {
 			ps.setString(1, unitId);
             ResultSet rs = ps.executeQuery();
             
-            PoRirekiBean rireki = new PoRirekiBean();
+            OcrRirekiBean rireki = new OcrRirekiBean();
 			while(rs.next()) {
 				// ユーザIDと名前をBeanクラスへセット
 				for(int i=0; i<dataWidth; i++) {
@@ -61,7 +61,7 @@ public class PoRirekiDAO {
             	// リストにBeanクラスごと格納
 				list.add(rireki);
 				//Beanクラスを初期化
-				rireki = new PoRirekiBean();
+				rireki = new OcrRirekiBean();
 			}
 			
 		} catch(SQLException sql_e) {
@@ -83,7 +83,7 @@ public class PoRirekiDAO {
 		// リストを返す
 		return list;
 	}
-	public PoRirekiBean readHeader(String unitId) throws SQLException {
+	public OcrRirekiBean readHeader(String unitId) throws SQLException {
  		int dataWidth = 4;
 		String fields = "";
 		for(int i=0; i<dataWidth; i++) {
@@ -99,8 +99,8 @@ public class PoRirekiDAO {
 		
 		//接続処理
 		Connection conn = null;
-		//ArrayList<PoRirekiBean> list = new ArrayList<PoRirekiBean>();
-        PoRirekiBean rireki = new PoRirekiBean();
+		//ArrayList<OcrRirekiBean> list = new ArrayList<OcrRirekiBean>();
+        OcrRirekiBean rireki = new OcrRirekiBean();
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(URL,USER,PASS);
@@ -118,7 +118,7 @@ public class PoRirekiDAO {
             	// リストにBeanクラスごと格納
             	//list.add(rireki);
 				//Beanクラスを初期化
-            	//rireki = new PoRirekiBean();
+            	//rireki = new OcrRirekiBean();
 			}
 		} catch(SQLException sql_e) {
 			// エラーハンドリング
