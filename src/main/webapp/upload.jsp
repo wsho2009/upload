@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.List"%>
-<%@ page import="fax.poFormBean" %>
+<%@ page import="fax.PoFormBean" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,9 +10,11 @@
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script>
   	$(function() {
-  	  	var id = "<%= request.getAttribute("id") %>";
-  	  	console.log('id='+id);
-	    $.post('upload', 'type=select&id='+id)
+  	  	var userId = "<%= request.getAttribute("userId") %>";
+  	  	console.log('userId='+userId);
+  	  	var userName = "<%= request.getAttribute("userName") %>";
+  	  	console.log('userName='+userName);
+	    $.post('upload', 'type=select&userId='+userId+'&userName='+userName)
         .done(function(data) {
           	// 通信成功時のコールバック
           	console.log(data);
@@ -37,7 +39,7 @@
         //  // 常に実行する処理
         });
 
-   	    $.post('upload', 'type=rireki&id='+id)
+   	    $.post('upload', 'type=rireki&userId='+userId)
         .done(function (data) {
             // 通信成功時のコールバック
             console.log(data);
@@ -53,8 +55,8 @@
 				var tr = $('<tr />');
 				var id = $('<td />').text(registdata.username);
 				var registered = $('<td />').text(registdata.datetime);
-				var org_file_name = $('<td />').text(registdata.filename);
-				var form_id = $('<td />').text(registdata.formname);
+				var org_file_name = $('<td />').text("");
+				var form_id = $('<td />').text(registdata.toricd);
 				tr.append(id);
 				tr.append(registered);
 				tr.append(org_file_name);
@@ -124,7 +126,7 @@
 			} else {
 				file_type =file.type;
 			}
-			console.log(file_type);
+			console.log('file_type'+file_type);
 			var pdfType= 'pdf';
 			if (!(file_type.match('pdf')||file_type.match('tsv')||file_type.match(
 					'application/vnd.ms-excel')||file_type.match('text/plain')||file_type.match('text/csv')
@@ -178,9 +180,8 @@
 			var formId =  $('#select-1 option:selected').val();
 			console.log("formId: " + formId);
 			var toriCd = formId.substr(0, 5);
-
 			if (fileName.indexOf(toriCd) == -1) {
-				alert("ファイル名に含まれていません。確認してください。")
+				alert("ファイル名に指定した帳票の取引先ｺｰﾄﾞ("+ toriCd +")含まれていません。確認してください。")
 				return;
 			}
 			console.log("fileName:" + fileName);
@@ -202,8 +203,8 @@
 			//登録処理開始
 			const formData = new FormData();
 			formData.append('type', "upload");
-			formData.append('id', id);
-			formData.append('user', user);
+			formData.append('userId', id);
+			formData.append('userName', user);
 			formData.append('code', code);
 			formData.append('dt', dtStr);
 			formData.append('file', files[0]);
@@ -227,11 +228,11 @@
 				$('#icon_clear_button').hide();	//icon_clear_buttonを非表示
 				$('#drop_area').css('border', '1px dashed #aaa');		//枠を点線に変更
 				//var id = "<%= request.getAttribute("id") %>";
-				alert("アップロードしました。\n システムに登録が完了したらログインID宛にメールを送信します。\n　宛先: " + id);
+				alert("アップロードしました。\n システムに登録が完了したらログインID宛にメールを送信します。\n　宛先: " + userId);
 				$("#listtable tr.last").remove();
 				//1行目に追加
-				var addline = '<tr><td>' + user + '/td><td>' + dtStr + '</td><td>' + fileName + '</td><td>' + formName + '</td></tr>'
-				$('#listtable td:first').after(addline);
+				var addline = '<tr><td>' + userName + '</td><td>' + dtStr + '</td><td>' + fileName + '</td><td>' + formName + '</td></tr>'
+				$('#listtable tr:first').after(addline);
 				console.log("add: " + addline);
 			}).fail(function(err) {
 				console.log(err);
@@ -350,9 +351,9 @@
   <table id="control">
   	<tr>
   		<th>User</th>
-  		<td><label><%= request.getAttribute("name") %></label></td>
-  		<input type="hidden" id="text_id" size="30" value=<%= request.getAttribute("id") %>>
-  		<input type="hidden" id="text_user" size="30" value=<%= request.getAttribute("name") %>>
+  		<td><label><%= request.getAttribute("userName") %></label></td>
+  		<input type="hidden" id="text_id" size="30" value=<%= request.getAttribute("userId") %>>
+  		<input type="hidden" id="text_user" size="30" value=<%= request.getAttribute("userName") %>>
   		<input type="hidden" id="text_code" size="30" value=<%= request.getAttribute("code") %>>
   		<th>Form</th>
   		<td><select name="form" id="select-1" class="target">

@@ -8,59 +8,54 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
  * @author PC
  *
  */
-public class faxDAO {
+public class OcrFormDAO {
 	
-	public faxDAO() {
+	public OcrFormDAO() {
 	}
 
 	// インスタンスオブジェクトの生成->返却（コードの簡略化）
-	public static faxDAO getInstance() {
-		return new faxDAO();
+	public static OcrFormDAO getInstance() {
+		return new OcrFormDAO();
 	}
-	
-	// 検索処理
-	// 戻り値		：ArrayList<Beanクラス>
-	public ArrayList<faxBean> read() throws SQLException {
-		String URL;
-		String USER;
-		String PASS;
-		String sql;
-		//SQL作成
-        sql = "select * from todo";
+
+	public OcrFormBean readData(String documentId) throws SQLException {
+		
+		if (documentId.equals("") || documentId == null) {
+			return null;
+		}
+		String sql = "select * from OCRFORMTABLE where DOCUMENT_ID=?";
         //接続情報取得
 		ResourceBundle rb = ResourceBundle.getBundle("prop");
-		URL = rb.getString("URL");
-		USER = rb.getString("USER");
-		PASS = rb.getString("PASS");
+		String URL = rb.getString("URL");
+		String USER = rb.getString("USER");
+		String PASS = rb.getString("PASS");
+		
 		//接続処理
 		Connection conn = null;
-		ArrayList<faxBean> fax_dao = new ArrayList<faxBean>();
+        OcrFormBean form = new OcrFormBean();
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(URL,USER,PASS);
 			System.out.println(sql);
 
 			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, documentId);
             ResultSet rs = ps.executeQuery();
-
-            faxBean fax = new faxBean();
-			while(rs.next()) {
-				// ユーザIDと名前をBeanクラスへセット
-            	fax.setId(rs.getInt("id"));
-            	fax.setTodo(rs.getString("TODO"));
-            	fax.setTimeLimit(rs.getString("TIMELIMIT"));
-            	// リストにBeanクラスごと格納
-				fax_dao.add(fax);
-				//Beanクラスを初期化
-				fax = new faxBean();
-			}
+            
+            //1レコードなので、listなし
+            rs.next();
+			form.setNo(rs.getString("NO"));
+			form.setName(rs.getString("FORM_NAME"));
+			form.setDocumentId(rs.getString("DOCUMENT_ID"));
+			form.setDocumentName(rs.getString("DOCUMENT_NAME"));
+			form.setDocsetId(rs.getString("DOCSET_ID"));
+			form.setDocsetName(rs.getString("DOCSET_NAME"));
 			
 		} catch(SQLException sql_e) {
 			// エラーハンドリング
@@ -79,6 +74,6 @@ public class faxDAO {
 			}
 		}
 		// リストを返す
-		return fax_dao;
+		return form;
 	}
 }

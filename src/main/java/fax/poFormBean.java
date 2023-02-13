@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class poFormBean implements Serializable {
+public class PoFormBean implements Serializable {
 
     @JsonProperty("no")
 	private int no;
@@ -17,7 +17,7 @@ public class poFormBean implements Serializable {
     @JsonProperty("member")
 	private String member;
 	
-	//public poFormBean() {
+	//public PoFormBean() {
 	//}
 
 	public void setNo(int no) { this.no = no; }

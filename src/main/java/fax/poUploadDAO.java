@@ -3,6 +3,10 @@
  */
 package fax;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -11,73 +15,51 @@ import java.util.ResourceBundle;
  * @author PC
  *
  */
-public class poUploadDAO {
+public class PoUploadDAO {
 	
-	public poUploadDAO() {
+	public PoUploadDAO() {
 	}
 
 	// インスタンスオブジェクトの生成->返却（コードの簡略化）
-	public static poUploadDAO getInstance() {
-		return new poUploadDAO();
+	public static PoUploadDAO getInstance() {
+		return new PoUploadDAO();
 	}
 	
 	// 検索処理
 	// 戻り値		：ArrayList<Beanクラス>
-	public ArrayList<poUploadBean> read(String id) throws SQLException {
-		String URL;
-		String USER;
-		String PASS;
-		String sql;
-		//SQL作成
-        sql = "select * from todo";
+	public ArrayList<PoUploadBean> read(String unitId) throws SQLException {
+		String sql = "select * from POUPLOADTABLE where USER_ID = ?";
         //接続情報取得
 		ResourceBundle rb = ResourceBundle.getBundle("prop");
-		URL = rb.getString("URL");
-		USER = rb.getString("USER");
-		PASS = rb.getString("PASS");
+		String URL = rb.getString("URL");
+		String USER = rb.getString("USER");
+		String PASS = rb.getString("PASS");
 		
-		ArrayList<poUploadBean> list = new ArrayList<poUploadBean>();		
-        String[][] data = new String[][] {
-        	{"Taro","2023/01/01 10:11:22","AAAAA.pdf","AAA_NAME"},
-        	{"Jiro","2023/01/04 08:11:22","BBBBB.pdf","BBB_NAME"}
-        };
-        poUploadBean poUpload = new poUploadBean();
-		for (int i=0; i<2; i++) {
-			// ユーザIDと名前をBeanクラスへセット
-			poUpload.setUserName(data[i][0]);
-			poUpload.setDatetime(data[i][1]);
-			poUpload.setFileName(data[i][2]);
-			poUpload.setFormName(data[i][3]);
-        	// リストにBeanクラスごと格納
-			list.add(poUpload);
-			//Beanクラスを初期化
-			poUpload = new poUploadBean();
-		}
-        
-		// リストを返す
-		return list;
-/*
 		//接続処理
 		Connection conn = null;
-		ArrayList<poFormBean> fax_dao = new ArrayList<poFormBean>();
+		ArrayList<PoUploadBean> list = new ArrayList<PoUploadBean>();
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(URL,USER,PASS);
 			System.out.println(sql);
 
 			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, unitId);
             ResultSet rs = ps.executeQuery();
-
-            poFormBean fax = new poFormBean();
+            
+            PoUploadBean upload = new PoUploadBean();
 			while(rs.next()) {
 				// ユーザIDと名前をBeanクラスへセット
-            	fax.setId(rs.getInt("id"));
-            	fax.setTodo(rs.getString("TODO"));
-            	fax.setTimeLimit(rs.getString("TIMELIMIT"));
+				upload.setUserId(rs.getString("USER_ID"));
+				upload.setUserName(rs.getString("USER_NAME"));
+				upload.setDatetime(rs.getString("CREATED_DATE"));
+				upload.setToriCd(rs.getString("TORIHIKISAKI_CD"));
+				upload.setUploadPath(rs.getString("UPLOAD_PATH"));
+				upload.setCode(rs.getString("CODE"));
             	// リストにBeanクラスごと格納
-				fax_dao.add(fax);
+				list.add(upload);
 				//Beanクラスを初期化
-				fax = new poFormBean();
+				upload = new PoUploadBean();
 			}
 			
 		} catch(SQLException sql_e) {
@@ -97,7 +79,6 @@ public class poUploadDAO {
 			}
 		}
 		// リストを返す
-		return fax_dao;
-		*/
+		return list;
 	}
 }
