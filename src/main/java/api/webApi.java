@@ -36,7 +36,7 @@ public class webApi extends HttpServlet {
         if (Object == null) {
         	return;
         }
-        if (Object.startsWith("konyurireki")) {
+        if (Object.equals("konyurireki") == true) {
         	//パラメータ解析
 	        String Konyuusaki = request.getParameter("konyuusaki");
 	        System.out.println("Konyuusaki: " + Konyuusaki);
