@@ -4,10 +4,11 @@ httprequest()
 Function httprequest()
     Dim httpReq
     Dim Url
-    Url = "http://localhost:8080/upload/watchdog"
+    Url = "http://localhost:8080/upload/watchdog?node=%s"
+    Url = replace(Url, "%s", "node01")
     Set httpReq = CreateObject("MSXML2.XMLHTTP")
     'リクエスト処理
-    httpReq.Open "GET", Url, False ' FALSE:同期処理
+    httpReq.Open "POST", Url, False ' FALSE:同期処理
     httpReq.send
     
     If httpReq.Status <> 200 Then
