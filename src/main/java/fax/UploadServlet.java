@@ -147,7 +147,6 @@ public class UploadServlet extends HttpServlet {
 			}
 			
 			String dtStr = dt.substring(0,4) + dt.substring(5,7) + dt.substring(8,10) + dt.substring(11,13) + dt.substring(14,16) + dt.substring(17,19);
-			/*------------------------------------------------------------*/
 			System.out.println(part.getContentType());
 			String OCR_INPUT_PATH = rb.getString("OCR_INPUT_PATH");
 			String ext = filename.substring(filename.lastIndexOf("."));
@@ -179,8 +178,6 @@ public class UploadServlet extends HttpServlet {
 		        dst = Paths.get(uploadFilePath);
 		    	Files.copy(src, dst, REPLACE_EXISTING);
 			}
-			/*------------------------------------------------------------*/
-			
 			response.setCharacterEncoding("utf-8");
 			response.setContentType("application/json");
 			
@@ -203,8 +200,28 @@ public class UploadServlet extends HttpServlet {
 					   "file: " + toriCd + "\n" +
 					   "file: " + uploadFilePath + "\n";;
 			mail.sendRawMail();
-        }
-
+	    } else if (type.equals("uploadTest") == true) {
+			request.setCharacterEncoding("utf-8");
+			Part part = request.getPart("file");
+			String filename = getFilename(part);
+	        System.out.println("filename: " + filename);      
+			ResourceBundle rb = ResourceBundle.getBundle("prop");
+			String LOCAL_PATH = rb.getString("LOCAL_PATH");
+			
+			/*------------------------------------------------------------*/
+			System.out.println(part.getContentType());
+			String localFilePath = LOCAL_PATH + filename;
+			part.write(localFilePath);	//ローカルへファイル保存
+			
+			response.setCharacterEncoding("utf-8");
+			response.setContentType("application/json");
+			
+	        //レスポンス
+			PrintWriter pw = response.getWriter();
+			pw.println("{\"result\":\"ok\"}");
+			pw.flush();
+			pw.close();
+	    }
 		//doGet(request, response);
     }
 	
