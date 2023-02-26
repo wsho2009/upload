@@ -15,27 +15,34 @@ import java.util.ResourceBundle;
  * @author PC
  *
  */
-public class konyuDAO {
+public class KonyuDAO {
 
 	// インスタンスオブジェクトの生成->返却（コードの簡略化）
-	public static konyuDAO getInstance() {
-		return new konyuDAO();
+	public static KonyuDAO getInstance() {
+		return new KonyuDAO();
 	}
 	
-	// 検索処理
-	// 戻り値		：ArrayList<Beanクラス>
-	public ArrayList<konyuBean> read(String Konnyusaki) throws SQLException {
+	public ArrayList<KonyuBean> read() throws SQLException {
+		return read("", "", "", "");
+	}
+	
+	public ArrayList<KonyuBean> read(String konyusaki, String syubetsu, String date_fr, String date_to) throws SQLException {
 		String URL;
 		String USER;
 		String PASS;
 		String sql;
+		if (konyusaki.equals("")== true)
+			konyusaki = "%";
+		if (syubetsu.equals("")== true)
+			syubetsu = "%";
 		//SQL作成
 		sql = "select No,TO_CHAR(Hizuke,'YYYY/MM/DD') HIZUKE,Konnyusaki,Syubetsu,Hinmei,Kakaku,Soryo,Kakaku_Kei "
-				+ "from KONYU_RIREKI where NO <> 0";
-        if (Konnyusaki != null) {
-        	sql = sql + " and Konnyusaki='" + Konnyusaki + "'";
-        }
-        sql = sql + " order by NO desc ";
+			+ "from KONYU_RIREKI "
+			+ "where NO <> 0 "
+			+ "and Konnyusaki like ? "
+			+ "and Syubetsu like ? "
+			+ "and Hizuke >= NVL(?, '1900/1/1') and Hizuke <= NVL(?, '2900/12/31') "
+        	+ " order by NO desc ";
         //接続情報取得
 		ResourceBundle rb = ResourceBundle.getBundle("prop");
 		URL = rb.getString("URL");
@@ -43,16 +50,21 @@ public class konyuDAO {
 		PASS = rb.getString("PASS");
 		//接続処理
 		Connection conn = null;
-		ArrayList<konyuBean> konyu_dao = new ArrayList<konyuBean>();
+		ArrayList<KonyuBean> konyu_dao = new ArrayList<KonyuBean>();
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(URL,USER,PASS);
 			System.out.println(sql);
-
+			
 			PreparedStatement ps = conn.prepareStatement(sql);
+			int i = 1;
+			ps.setString(i++, konyusaki);
+			ps.setString(i++, syubetsu);
+			ps.setString(i++, date_fr);
+			ps.setString(i++, date_to);
             ResultSet rs = ps.executeQuery();
 
-            konyuBean dao = new konyuBean();
+            KonyuBean dao = new KonyuBean();
 			while(rs.next()) {
 				// ユーザIDと名前をBeanクラスへセット
 				dao.setNo(rs.getInt("NO"));
@@ -66,7 +78,7 @@ public class konyuDAO {
 				// リストにBeanクラスごと格納
 				konyu_dao.add(dao);
 				//Beanクラスを初期化
-				dao = new konyuBean();
+				dao = new KonyuBean();
 			}
 			
 		} catch(SQLException sql_e) {

@@ -2,18 +2,28 @@ package konyurireki;
 
 import java.io.Serializable;
 
-public class konyuBean implements Serializable {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+public class KonyuBean implements Serializable {
+
+    @JsonProperty("no")
 	private int mNo;
+    @JsonProperty("hizuke")
 	private String mHizuke;
+    @JsonProperty("konnyusaki")
 	private String mKonnyusaki;
+    @JsonProperty("syubetsu")
 	private String mSyubetsu;
+    @JsonProperty("hinmei")
 	private String mHinmei;
+    @JsonProperty("kakaku")
 	private String mKakaku;
+    @JsonProperty("soryo")
 	private String mSoryo;
+    @JsonProperty("kakakukei")
 	private String mKakakuKei;
 	
-	public konyuBean() {
+	public KonyuBean() {
 	}
 
 	public void setNo(int no) { this.mNo = no; }

@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import konyurireki.konyuBean;
-import konyurireki.konyuDAO;
+import konyurireki.KonyuBean;
+import konyurireki.KonyuDAO;
 
 /**
  * Servlet implementation class webApi
@@ -42,7 +42,7 @@ public class webApi extends HttpServlet {
 	        System.out.println("Konyuusaki: " + Konyuusaki);
 	
 			try {
-				ArrayList<konyuBean> list = konyuDAO.getInstance().read(Konyuusaki);
+				ArrayList<KonyuBean> list = KonyuDAO.getInstance().read();
 				//https://rainbow-engine.com/jspservlet-csv-download/
 				response.setContentType("text/tsv;charset=UTF8");
 				String fileName = new String("konyurireki.tsv".getBytes("Shift_JIS"), "ISO-8859-1");
@@ -54,7 +54,7 @@ public class webApi extends HttpServlet {
 				writer.write(line);
 				//データ
 				for (int i=0; i<list.size(); i++) {
-					konyuBean dto = (konyuBean)list.get(i);
+					KonyuBean dto = (KonyuBean)list.get(i);
 		  			line = dto.getAllData();
 		  			writer.write(line);
 				}

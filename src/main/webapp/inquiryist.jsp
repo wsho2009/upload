@@ -41,7 +41,51 @@
 		});
 	});
   	$(function() {
+  	  	var userId = "<%= request.getAttribute("userId") %>";
+  	  	console.log('userId='+userId);
+  	  	var userName = "<%= request.getAttribute("userName") %>";
+  	  	console.log('userName='+userName);
 		$(".datepicker").datepicker();
+/*
+   	    $.post('fax', 'type=list&id='+userId)
+        .done(function(data) {
+			console.log(data);
+  	  	  	//既存テーブルクリア
+  	  	  	$('#listtable').empty();
+  	  	  	var html = '<table id="table" class="tablesorter">'
+  	  	  	$('#listtable').append(html);
+  	  	  	//テーブルヘッダ
+  	  	  	var thead = '<thead><tr align="center"><th>No</th><th>日付</th><th>購入先</th><th>種別</th><th>品名</th><th>価格</th><th>送料</th><th>合計</th></tr></thead>'
+  	  	  	$('#listtable').append(thead);
+			$.each(data, function(i, json){
+				var tbody = $('<tbody />');
+				var tr = $('<tr />');
+				var No = $('<td />').text(json.no);
+				var Hizuke = $('<td />').text(json.hizuke);
+				var Konnyusaki = $('<td />').text(json.konnyusaki);
+				var Syubetsu = $('<td />').text(json.syubetsu);
+				var Hinmei = $('<td />').text(json.hinmei);
+				var Kakaku = $('<td />').text(json.kakaku);
+				var Soryo = $('<td />').text(json.soryo);
+				var KakakuKie = $('<td />').text(json.kakakuKie);
+				tr.append(No);
+				tr.append(Hizuke);
+				tr.append(Konnyusaki);
+				tr.append(Syubetsu);
+				tr.append(Hinmei);
+				tr.append(Kakaku);
+				tr.append(Soryo);
+				tr.append(KakakuKie);
+				tbody.append(tr);
+				$('#listtable').append(tbody);
+			});
+            
+        }).fail(function () {
+            // 通信失敗時のコールバック
+            alert("読み込み失敗");
+          //}).always(function (result) {
+          //  // 常に実行する処理
+        });*/
 	});
   </script>
   <style>
@@ -120,11 +164,12 @@
   	  	}
   	};
   </script>
-  <form action=fax method="post">
-     Form: <input type="text" name="form">
-     Date:  <input type="date" name="date">
-     <button type="submit">Find</button><br>
-     <chuui>IEサポート終了に伴い...</chuui>
+  <form action=fax?type=list method="post">
+     購入先: <input type="text" name="konyusaki">
+     種別: <input type="text" name="syubetsu">
+     日付  <input type="date" name="date_fr">～<input type="date" name="date_to"><br>
+     <button type="submit">検索</button>
+     <button type="">クリア</button><br>
   </form>
   <div id="pager" class="pager">
     <button type="button" class="first"><<</button>
@@ -140,6 +185,7 @@
     </select>
     <select class="gotoPage" title="Select page number"></select>
   </div>
+<!--     <div id='listtable'></div> -->
   <table id="table" class="tablesorter">	 <!--tablesorter-blue-->
   	<thead><tr align=center>
    		<th style="font-size: 11pt;">No</th>
@@ -151,7 +197,7 @@
   		<th style="font-size: 11pt;">送料</th>
   		<th style="font-size: 11pt;">合計</th>
   	</tr></thead>
-   	<tbody>
+    	<tbody>
    		<% 
    		List<KonyuBean> list = (List<KonyuBean>)request.getAttribute("list");
    		for (int i=0; i<list.size(); i++) {
